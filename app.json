@@ -15,6 +15,17 @@
     "experiments": {
       "typedRoutes": true
     },
-    "scheme": "myapp"
+    "scheme": "myapp",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a8162603-d106-4e3b-805e-24c3d02b187d"
+      }
+    },
+    "android": {
+      "package": "com.kaspiani.SIREMobile"
+    }
   }
 }
