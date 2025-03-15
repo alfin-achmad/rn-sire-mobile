@@ -25,7 +25,8 @@
       }
     },
     "android": {
-      "package": "com.kaspiani.SIREMobile"
+      "package": "com.kaspiani.SIREMobile",
+      "softwareKeyboardLayoutMode": "pan"
     }
   }
 }

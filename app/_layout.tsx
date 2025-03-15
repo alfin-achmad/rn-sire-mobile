@@ -8,6 +8,7 @@ import {PaperProvider} from "react-native-paper";
 import "../global.css";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {queryClient} from "@/providers/react-query";
+import FlashMessage from "react-native-flash-message";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -38,6 +39,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider>
+        <FlashMessage position="top" />
         <Stack screenOptions={{headerShown: false}} />
       </PaperProvider>
     </QueryClientProvider>

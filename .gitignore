@@ -37,4 +37,4 @@ yarn-error.*
 
 app-example
 .idea
-./build-*.apk
+build-*.apk

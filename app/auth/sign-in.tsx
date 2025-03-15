@@ -1,83 +1,139 @@
-import {useRouter} from "expo-router";
-import {Text as BasicText} from "react-native";
-import {Button, Text, TextInput} from "react-native-paper";
-import {Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, View} from "react-native";
-import {APP_ROUTES} from "@/constants/urls";
+import { useRouter } from "expo-router";
+import * as Device from 'expo-device';
+import {ActivityIndicator, Dimensions, Image, SafeAreaView, Text as BasicText} from "react-native";
+import { Button, Text, TextInput } from "react-native-paper";
+import { Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, View } from "react-native";
+import { APP_ROUTES } from "@/constants/urls";
 import CAuthHeader from "@/components/CAuthHeader";
 import colors from "@/constants/colors";
-import {useState} from "react";
+import { useState } from "react";
 import CAuthFooter from "@/components/CAuthFooter";
+import {showToast} from "@/helpers/general";
+import {useAuth} from "@/queries/useAuth";
+
+const { height, width } = Dimensions.get("window");
+const isSmallScreen = width < 380;
 
 const SignInScreen = () => {
-	const router = useRouter()
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [error, setError] = useState('');
+	const router = useRouter();
+	const {isLoading, signIn: processSignIn} = useAuth();
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
 
 	const handleAction = {
 		touchableNative: () => Keyboard.dismiss(),
 		signIn: () => {
-			return router.replace(APP_ROUTES.MAIN.DASHBOARD)
+			if (!email){
+				showToast('Please enter a valid email  / no elector', 'danger');
+			} else if (!password) {
+				showToast('Please enter a valid password', 'danger');
+			} else {
+				processSignIn({ email, password });
+			}
 		},
-	}
+	};
 
 	return (
-		<TouchableWithoutFeedback onPress={() => handleAction.touchableNative()}>
-			<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{backgroundColor: "#FCF7F8"}} className="p-6 flex-1 justify-center">
-				<CAuthHeader />
-				<TextInput
-					textContentType="none"
-					importantForAutofill="no"
-					autoComplete="off"
-					label="Email / No. Elector"
-					mode="outlined"
-					keyboardType="email-address"
-					autoCapitalize="none"
-					left={
-						<TextInput.Icon icon="account-box-outline" />
-					}
-					className="mb-1"
-				/>
-				<TextInput
-					textContentType="none"
-					importantForAutofill="no"
-					autoComplete="off"
-					label="Password"
-					mode="outlined"
-					keyboardType="password"
-					autoCapitalize="none"
-					value={password}
-					secureTextEntry={secureTextEntry}
-					onChangeText={setPassword}
-					left={
-						<TextInput.Icon icon="key" />
-					}
-					right={
-						<TextInput.Icon
-							icon={secureTextEntry ? "eye-off": "eye"}
-							onPress={() => setSecureTextEntry(!secureTextEntry)}
-						/>
-					}
-				/>
-				<Button
-					labelStyle={{fontSize: 16, fontWeight: "bold", paddingVertical: 8, fontFamily: "IBMPlexSans_Bold"}}
-					style={{marginTop: 10, borderRadius: 5, backgroundColor: colors.secondary}}
-					mode="contained"
+		<TouchableWithoutFeedback onPress={handleAction.touchableNative}>
+			<SafeAreaView className="flex-1 bg-white">
+				<KeyboardAvoidingView
+					className="flex-1 p-6"
+					keyboardVerticalOffset={100}
 				>
-					Sign in
-				</Button>
-				<BasicText className="text-sm mt-2.5 text-center" style={{fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>
-					Forgot Password
-				</BasicText>
-				<View className="flex-row justify-center mt-5">
-					<Text style={{fontSize: 14, fontFamily: "IBMPlexSans", color: colors.secondary}}>Don't have an account? </Text>
-					<Text style={{fontSize: 14, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Register</Text>
-				</View>
+					<CAuthHeader />
 
+					<View className={`flex-1 items-center justify-center w-full ${isSmallScreen ? "mt-20" : ""}`}>
+						<Image
+							source={require("@/assets/image/bg-signin-2.jpg")}
+							style={{ width: "100%", height: "100%", resizeMode: "contain" }}
+						/>
+					</View>
+
+					<View className="pb-0">
+						<TextInput
+							textContentType="none"
+							importantForAutofill="no"
+							autoComplete="off"
+							label="Email / No. Elector"
+							mode="outlined"
+							keyboardType="email-address"
+							autoCapitalize="none"
+							left={<TextInput.Icon icon="account-box-outline" />}
+							style={[
+								{ backgroundColor: "#FFF", color: "#000" },
+								isLoading && { opacity: 1 },
+							]}
+							onChangeText={setEmail}
+							editable={!isLoading}
+						/>
+						<TextInput
+							textContentType="none"
+							importantForAutofill="no"
+							autoComplete="off"
+							label="Password"
+							mode="outlined"
+							autoCapitalize="none"
+							value={password}
+							secureTextEntry={secureTextEntry}
+							onChangeText={setPassword}
+							left={<TextInput.Icon icon="key" />}
+							right={
+								<TextInput.Icon
+									disabled={isLoading}
+									icon={secureTextEntry ? "eye-off" : "eye"}
+									onPress={() => setSecureTextEntry(!secureTextEntry)}
+								/>
+							}
+							style={[
+								{ backgroundColor: "#FFF", color: "#000" },
+								isLoading && { opacity: 1 },
+							]}
+							editable={!isLoading}
+						/>
+						<Button
+							labelStyle={{
+								fontSize: 16,
+								fontWeight: "bold",
+								paddingVertical: 8,
+								fontFamily: "IBMPlexSans_Bold",
+								color: "#FFF"
+							}}
+							style={{
+								marginTop: 10,
+								borderRadius: 5,
+								backgroundColor: colors.secondary,
+							}}
+							mode="contained"
+							onPress={handleAction.signIn}
+							disabled={isLoading}
+						>
+							{isLoading ? <ActivityIndicator size="small" color="#FFF" /> : "Sign In"}
+						</Button>
+						<BasicText
+							className="mt-2.5 text-center"
+							style={{
+								fontSize: 15,
+								fontFamily: "IBMPlexSans_Bold",
+								color: colors.secondary,
+							}}
+						>
+							Forgot Password ?
+						</BasicText>
+						<View className="flex-row justify-center mt-5">
+							<Text style={{ fontSize: 14, fontFamily: "IBMPlexSans", color: colors.secondary }}>
+								Don't have an account?{" "}
+							</Text>
+							<Text style={{ fontSize: 14, fontFamily: "IBMPlexSans_Bold", color: colors.secondary }}>
+								Register
+							</Text>
+						</View>
+					</View>
+				</KeyboardAvoidingView>
 				<CAuthFooter />
-			</KeyboardAvoidingView>
+			</SafeAreaView>
 		</TouchableWithoutFeedback>
-	)
-}
-export default SignInScreen
+	);
+};
+
+export default SignInScreen;

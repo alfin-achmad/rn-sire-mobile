@@ -1,11 +1,24 @@
-import {Redirect, Slot} from "expo-router";
+import { Redirect, Slot } from "expo-router";
+import { useAuth } from "@/queries/useAuth";
+import { APP_ROUTES } from "@/constants/urls";
+import { ActivityIndicator, View } from "react-native";
 
-export default function ProtectedLayout(){
-	const isAuthenticated = false
+const ProtectedLayout = () => {
+	const { isAuthenticated, isCheckingAuth } = useAuth();
 
-	if(!isAuthenticated){
-		return <Redirect href="/auth/sign-in" />
+	if (isCheckingAuth) {
+		return (
+			<View className="flex-1 justify-center items-center">
+				<ActivityIndicator size="large" color="#007AFF" />
+			</View>
+		);
 	}
 
-	return <Slot />
-}
+	if (!isAuthenticated) {
+		return <Redirect href={APP_ROUTES.AUTH.SIGN_IN} />;
+	}
+
+	return <Slot />;
+};
+
+export default ProtectedLayout;

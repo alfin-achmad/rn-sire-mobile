@@ -1,14 +1,22 @@
-import {Image, Text} from "react-native";
-import staeLogo from "@/assets/image/stae-logo.png"
-import {globalStyles} from "@/styles/globalStyle";
+import { Image, Text, View } from "react-native";
+import staeLogo from "@/assets/image/stae-logo.png";
+import { globalStyles } from "@/styles/globalStyle";
+import colors from "@/constants/colors";
 
 const CAuthHeader = () => {
 	return (
-		<>
-			<Image source={staeLogo} className="w-28 h-28 self-center mb-5"/>
-			<Text style={globalStyles.text} className="text-3xl text-center mt-2.5 mb-2.5 uppercase">Sistema Informasaun Resenseamento Eleitoral</Text>
-		</>
-	)
-}
+		<View className="flex-row items-center">
+			<Image source={staeLogo} className="w-14 h-14 mr-4" />
+			<View>
+				<Text style={{...globalStyles.textBold, color: colors.secondary}} className="text-3xl uppercase">
+					SIRE Mobile
+				</Text>
+				<Text style={{...globalStyles.text, color: colors.secondary}} className="text-sm uppercase">
+					Informasaun Resenseamento Eleitoral
+				</Text>
+			</View>
+		</View>
+	);
+};
 
 export default CAuthHeader;

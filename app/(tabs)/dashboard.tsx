@@ -2,7 +2,7 @@ import {Text} from "react-native-paper";
 
 const DashboardScreen = () => {
 	return (
-		<Text>Account</Text>
+		<Text>Dashboard</Text>
 	)
 }
 
