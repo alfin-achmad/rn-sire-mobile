@@ -6,17 +6,19 @@ import { Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Vie
 import { APP_ROUTES } from "@/constants/urls";
 import CAuthHeader from "@/components/CAuthHeader";
 import colors from "@/constants/colors";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import CAuthFooter from "@/components/CAuthFooter";
 import {showToast} from "@/helpers/general";
 import {useAuth} from "@/queries/useAuth";
+import useDashboardStats from "@/queries/useDashboardStats";
 
 const { height, width } = Dimensions.get("window");
 const isSmallScreen = width < 380;
 
 const SignInScreen = () => {
 	const router = useRouter();
-	const {isLoading, signIn: processSignIn} = useAuth();
+	const {isLoading, isAuthenticated, signIn: processSignIn} = useAuth();
+	const {resetDates} = useDashboardStats();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -24,15 +26,17 @@ const SignInScreen = () => {
 	const handleAction = {
 		touchableNative: () => Keyboard.dismiss(),
 		signIn: () => {
-			if (!email){
-				showToast('Please enter a valid email  / no elector', 'danger');
-			} else if (!password) {
-				showToast('Please enter a valid password', 'danger');
-			} else {
-				processSignIn({ email, password });
-			}
+			if (!email) return showToast("Please enter a valid email", "danger");
+			if (!password) return showToast("Please enter a valid password", "danger");
+			processSignIn({ email, password });
 		},
 	};
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			router.replace(APP_ROUTES.MAIN.DASHBOARD);
+		}
+	}, [isAuthenticated]);
 
 	return (
 		<TouchableWithoutFeedback onPress={handleAction.touchableNative}>

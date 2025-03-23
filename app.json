@@ -5,12 +5,21 @@
     "version": "1.0.0",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "icon": "./assets/image/stae-logo.png",
     "web": {
       "bundler": "metro",
       "output": "static"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -26,7 +35,19 @@
     },
     "android": {
       "package": "com.kaspiani.SIREMobile",
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "splash": {
+      "image": "./assets/image/stae-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "ios": {
+      "bundleIdentifier": "com.kaspiani.SIREMobile"
     }
   }
 }

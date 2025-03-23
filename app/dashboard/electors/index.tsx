@@ -12,23 +12,16 @@ import {useAuth} from "@/queries/useAuth";
 import {detectInputType, formatNumber, reformatCodeElector} from "@/helpers/general";
 import CShowResult from "@/components/CShowResult";
 import CFilterByStatusLists from "@/components/CFilterByStatusLists";
-import {
-	LIST_ELECTOR_STATUS, LIST_ELECTOR_STATUS_PRINT_TYPE,
-	LIST_ELECTOR_TYPE, RECORDS_DOUBLE_ORDER_BY_LIST,
-	RECORDS_ORDER_BY_LIST,
-	RECORDS_PER_PAGE_LIST
-} from "@/constants/general";
+import {LIST_ELECTOR_STATUS, RECORDS_ORDER_BY_LIST, RECORDS_PER_PAGE_LIST} from "@/constants/general";
 import CListPicker from "@/components/CListPicker";
 import CRegionPicker from "@/components/CRegionPicker";
 import useRegion from "@/queries/useRegion";
-import CAndroidDatepicker from "@/components/CAndroidDatepicker";
-import {formatDate, parseFormattedDate} from "@/helpers/formatDate";
 
-const DoubleElectorScreen = () => {
+const ElectorScreen = () => {
 	const storeName = "electorScreen"
 	const scrollViewRef = useRef(null);
 	const {user} = useAuth();
-	const {params, updateParam, updateParams, fetchFindDoubleElector, isLoading, data, resetParams} = useElector();
+	const {params, updateParam, updateParams, fetchFindElector, isLoading, data, resetParams} = useElector();
 	const {selectedRegions, resetRegions} = useRegion(storeName);
 	const router = useRouter();
 	const {historySearchText, historyFromDetail} = useLocalSearchParams();
@@ -44,9 +37,9 @@ const DoubleElectorScreen = () => {
 			router.replace(APP_ROUTES.DASHBOARD);
 		},
 		onFilterElectorStatus: (value) => {
-			updateParam("findDoubleElectorRegister", "prstatus", value === "ALL" ?"":value);
+			updateParam("findElector", "prstatus", value === "ALL" ?"":value);
 
-			fetchFindDoubleElector(true);
+			fetchFindElector(true);
 			Keyboard.dismiss();
 		},
 		onShowModalFilter: () => {
@@ -59,25 +52,17 @@ const DoubleElectorScreen = () => {
 
 			setSearchText(formattedText);
 
-			updateParam("findDoubleElectorRegister", "prkdelektor", isNumeric ? formattedText : "");
-			updateParam("findDoubleElectorRegister", "prnama", isNumeric ? "" : formattedText);
-			updateParam("findDoubleElectorRegister", "prstatus", (params.findDoubleElectorRegister?.prstatus !== ""? params.findDoubleElectorRegister?.prstatus:""));
+			updateParam("findElector", "prkdelektor", isNumeric ? formattedText : "");
+			updateParam("findElector", "prnama", isNumeric ? "" : formattedText);
+			updateParam("findElector", "prstatus", (params.findElector?.prstatus !== ""? params.findElector?.prstatus:""));
 
-			fetchFindDoubleElector(true);
+			fetchFindElector(true);
 			setIsSearch(true);
 			Keyboard.dismiss();
 		},
 		onLoadMore: async () => {
-			updateParam("findDoubleElectorRegister", "p_page_number", params.findDoubleElectorRegister.p_page_number + 1);
-			fetchFindDoubleElector(false);
-		},
-		onChangeDate: (value, isEndDate=true) => {
-			let paramName = "prtg01"
-			if (isEndDate) {
-				paramName = "prtg02"
-			}
-
-			updateParam("findDoubleElectorRegister", paramName, formatDate(value));
+			updateParam("findElector", "p_page_number", params.findElector.p_page_number + 1);
+			fetchFindElector(false);
 		},
 		onResetFilter: () => {
 			resetRegions(storeName);
@@ -87,8 +72,8 @@ const DoubleElectorScreen = () => {
 			setIsSearch(false);
 		},
 		onChangeSizeScrollView: (width, height) => {
-			const getTotalResults = data?.findDoubleElectorRegister?.rows?.length || 0
-			const scrollTo = getTotalResults === params.findDoubleElectorRegister?.p_rows_per_page ? 0 : height
+			const getTotalResults = data?.findElector?.rows?.length || 0
+			const scrollTo = getTotalResults === params.findElector?.p_rows_per_page ? 0 : height
 
 			if (scrollViewRef.current && lastScrollPosition === 0) {
 				scrollViewRef.current.scrollTo({ y: scrollTo, animated: true });
@@ -96,16 +81,16 @@ const DoubleElectorScreen = () => {
 		},
 		onApplyFilter: () => {
 			if (searchText === ""){
-				updateParam("findDoubleElectorRegister", "prkdelektor", "ALL");
-				updateParam("findDoubleElectorRegister", "prnama", "ALL");
+				updateParam("findElector", "prkdelektor", "");
+				updateParam("findElector", "prnama", "");
 			}
 
-			updateParam("findDoubleElectorRegister", "prdistrik", (selectedRegions.district === "" ? "ALL":selectedRegions.district));
-			updateParam("findDoubleElectorRegister", "prsubdistrik", (selectedRegions.subdistrict === "" ? "ALL":selectedRegions.subdistrict));
-			updateParam("findDoubleElectorRegister", "prsuku", (selectedRegions.succo === "" ? "ALL":selectedRegions.succo));
-			updateParam("findDoubleElectorRegister", "praldeia", (selectedRegions.aldeia === "" ? "ALL":selectedRegions.aldeia));
+			updateParam("findElector", "prdistrik", selectedRegions.district);
+			updateParam("findElector", "prsubdistrik", selectedRegions.subdistrict);
+			updateParam("findElector", "prsuku", selectedRegions.succo);
+			updateParam("findElector", "praldeia", selectedRegions.aldeia);
 
-			fetchFindDoubleElector(true);
+			fetchFindElector(true);
 			setIsSearch(true);
 			setIsShowModalFilter(false);
 		},
@@ -114,20 +99,20 @@ const DoubleElectorScreen = () => {
 
 	useEffect(() => {
 		if(historyFromDetail && historyFromDetail !== ""){
-			updateParams("findElectorRegister", JSON.parse(historyFromDetail))
+			updateParams("findElector", JSON.parse(historyFromDetail))
 			setIsSearch(true);
 			if(historySearchText && historySearchText !== ""){
 				setIsSearch(true);
 				setSearchText(historySearchText)
 			}
-			fetchFindDoubleElector(true);
+			fetchFindElector(true);
 		}
 	}, [historyFromDetail, historySearchText]);
 
 	return (
 		<>
 			<View className="flex-1 bg-gray-100">
-				<CTopHeaderSubMenu title="Double Elector" handlePress={handleAction.onBack} />
+				<CTopHeaderSubMenu title="Elector" handlePress={handleAction.onBack} />
 				<View className="px-4 py-2 flex-row items-center space-x-2">
 					<View className="flex-1 mr-1">
 						<TextInput
@@ -162,9 +147,10 @@ const DoubleElectorScreen = () => {
 
 				{isSearch && (
 					<>
-						{!isLoading && data?.findDoubleElectorRegister?.rows?.length > 0 && (
+						<CFilterByStatusLists isDisabled={isLoading} statusLists={LIST_ELECTOR_STATUS} selectedVerificationType={params.findElector?.prstatus === ""?"ALL":params.findElector?.prstatus} setSelectedVerificationType={handleAction.onFilterElectorStatus} />
+						{!isLoading && data?.findElector?.rows?.length > 0 && (
 							<>
-								<CShowResult showPerPage={data?.findDoubleElectorRegister?.rows?.length} showTotalRecords={formatNumber(data.findDoubleElectorRegister?.totalRecords) || 0} />
+								<CShowResult showPerPage={data?.findElector?.rows?.length} showTotalRecords={formatNumber(data.findElector?.totalRecords) || 0} />
 							</>
 						)}
 
@@ -174,16 +160,16 @@ const DoubleElectorScreen = () => {
 									<ActivityIndicator size="large" color={colors.secondary} />
 									<Text className="text-gray-600 mt-2">Loading...</Text>
 								</View>
-							) : data?.findDoubleElectorRegister?.rows?.length > 0 ? (
+							) : data?.findElector?.rows?.length > 0 ? (
 								<>
-									{data.findDoubleElectorRegister.rows.map((elector, index) => (
-										<TouchableOpacity key={index} onPress={() => router.push({pathname: `/dashboard/electors/${elector?.KODE_ELEKTOR}`, params: {keyParam: "findDoubleElectorRegister", historySearchText: searchText, fromScreen: APP_ROUTES.DASHBOARD.DOUBLE_ELECTOR}})}>
-											<CItemsElector key={index} detailElector={elector} fromScreen={APP_ROUTES.DASHBOARD.DOUBLE_ELECTOR} />
+									{data.findElector.rows.map((elector, index) => (
+										<TouchableOpacity key={index} onPress={() => router.push({pathname: `/dashboard/electors/${elector?.KODE_ELEKTOR}`, params: {keyParam: "findElector", historySearchText: searchText, fromScreen: APP_ROUTES.DASHBOARD.ELECTOR}})}>
+											<CItemsElector key={index} detailElector={elector} />
 										</TouchableOpacity>
 									))}
 
 									<View className="mt-2 items-center">
-										{data.findDoubleElectorRegister?.rows?.length < data.findDoubleElectorRegister?.totalRecords ? (
+										{data.findElector?.rows?.length < data.findElector?.totalRecords ? (
 											<TouchableOpacity
 												className="border-blue-950 px-4 py-2 rounded-md border"
 												style={{ backgroundColor: colors.secondary }}
@@ -229,24 +215,24 @@ const DoubleElectorScreen = () => {
 
 						<ScrollView className="p-4 bg">
 							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Registration Date
+								<Text className="mb-1" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+									Father's Name
 								</Text>
-								<CAndroidDatepicker endDate={parseFormattedDate(params.findDoubleElectorRegister.prtg02)} startDate={parseFormattedDate(params.findDoubleElectorRegister.prtg01)} onChangeStart={(e) => handleAction.onChangeDate(e, false)} onChangeEnd={(e) => handleAction.onChangeDate(e, true)} />
+								<TextInput contentStyle={{ paddingLeft: 0 }} className="bg-white uppercase" mode="outlined" style={{height: 30, fontSize: 12, padding: 0}} onChangeText={(e) => updateParam("findElector", "prnmayah", (e).toUpperCase())} inputMode="text" value={params.findElector?.prnmayah} />
 							</View>
 
 							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Elector Type
+								<Text className="mb-1" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+									Mother's Name
 								</Text>
-								<CListPicker unique="filterElectorType" selectedValue={params.findDoubleElectorRegister?.prsts_ar} items={LIST_ELECTOR_TYPE} onSelect={(e) => updateParam("findDoubleElectorRegister", "prsts_ar", e)} />
+								<TextInput contentStyle={{ paddingLeft: 0 }} className="bg-white uppercase" mode="outlined" style={{height: 30, fontSize: 12, padding: 0}} onChangeText={(e) => updateParam("findElector", "prnmibu", (e).toUpperCase())} inputMode="text" placeholder={params.findElector?.prnmibu} />
 							</View>
 
 							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
 								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
 									Regions
 								</Text>
-								<CRegionPicker getDistrictUser={true} getSubdistrictUser={false} keyName={storeName} />
+								<CRegionPicker keyName={storeName} />
 							</View>
 
 							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
@@ -254,8 +240,8 @@ const DoubleElectorScreen = () => {
 									Shown Records
 								</Text>
 								<View className="flex flex-row gap-2">
-									<CListPicker isOutlinedMode={true} labelOutline="Show per page" unique="filterShowPerPage" selectedValue={params.findDoubleElectorRegister?.p_rows_per_page} items={RECORDS_PER_PAGE_LIST} onSelect={(e) => updateParam("findDoubleElectorRegister", "p_rows_per_page", e)} />
-									<CListPicker isOutlinedMode={true} labelOutline="Order by" unique="filterSortOrderBy" selectedValue={params.findDoubleElectorRegister?.prorder} items={RECORDS_DOUBLE_ORDER_BY_LIST} onSelect={(e) => updateParam("findDoubleElectorRegister", "prorder", e)} />
+									<CListPicker isOutlinedMode={true} labelOutline="Show per page" unique="filterShowPerPage" selectedValue={params.findElector?.p_rows_per_page} items={RECORDS_PER_PAGE_LIST} onSelect={(e) => updateParam("findElector", "p_rows_per_page", e)} />
+									<CListPicker isOutlinedMode={true} labelOutline="Order by" unique="filterSortOrderBy" selectedValue={params.findElector?.prorder} items={RECORDS_ORDER_BY_LIST} onSelect={(e) => updateParam("findElector", "prorder", e)} />
 								</View>
 							</View>
 
@@ -281,4 +267,4 @@ const DoubleElectorScreen = () => {
 	);
 };
 
-export default DoubleElectorScreen;
+export default ElectorScreen;

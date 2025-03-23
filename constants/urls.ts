@@ -1,6 +1,8 @@
 const API_BASE_URL = ""
 
-export const API_ENDPOINTS = {}
+export const API_ENDPOINTS = {
+	SIGN_IN: '/auth/login',
+}
 export const APP_ROUTES = {
 	AUTH: {
 		SIGN_IN: "/auth/sign-in",
@@ -10,11 +12,14 @@ export const APP_ROUTES = {
 		ACCOUNT: "/(tabs)/account",
 		ACTIVITY: "/(tabs)/activity",
 		NOTIFICATION: "/(tabs)/notification",
-		SEARCH: "/(tabs)/search",
+		SEARCH_BY_QR: "/(modals)/qrcode-scanner",
 	},
 	DASHBOARD: {
-		ELECTOR: "/dashboard/elector",
+		ELECTOR: "/dashboard/electors",
 		VERIFY_ELECTOR: "/dashboard/verify-elector",
 		DOUBLE_ELECTOR: "/dashboard/double-elector",
+		USERS: "/dashboard/users",
+		REGIONS: "/dashboard/regions",
+		REPORTS: "/dashboard/reports",
 	}
 } as const;

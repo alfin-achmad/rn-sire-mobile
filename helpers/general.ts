@@ -137,7 +137,7 @@ function getMessageColor(typeMessage) {
 		case "info":
 			return colors.secondary;
 		case "danger":
-			return colors.quaternary;
+			return colors.red;
 		case "warning":
 			return colors.darker3;
 		default:

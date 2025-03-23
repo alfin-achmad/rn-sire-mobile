@@ -1,8 +1,9 @@
 import {Text} from "react-native-paper";
+import CTopHeader from "@/components/CTopHeader";
 
 const NotificationScreen = () => {
 	return (
-		<Text>Account</Text>
+		<CTopHeader />
 	)
 }
 
