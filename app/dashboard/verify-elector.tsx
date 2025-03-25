@@ -1,8 +1,8 @@
 import CTopHeaderSubMenu from "@/components/CTopHeaderSubMenu";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import { APP_ROUTES } from "@/constants/urls";
-import {ActivityIndicator, Keyboard, ScrollView, Text, TouchableOpacity, View} from "react-native";
-import {Portal, TextInput, Modal} from "react-native-paper";
+import {ActivityIndicator, Modal, Keyboard, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Portal, TextInput} from "react-native-paper";
 import {useEffect, useState} from "react";
 import { Ionicons } from "@expo/vector-icons";
 import CFilterVerificationType from "@/components/CFilterVerificationType";
@@ -199,77 +199,68 @@ const VerifyElectorScreen = () => {
 				)}
 			</View>
 
-			<Portal>
-				<Modal
-					dismissable={true}
-					visible={isShowModalFilter}
-					onDismiss={handleAction.onCloseModal}
-					contentContainerStyle={{
-						flex: 1,
-					}}
-				>
-					<View className="flex-1 bg-gray-100">
-						<View className="p-4 flex-row items-center justify-between bg-white border-b border-gray-200">
-							<Text className="text-lg" style={{fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Filter Options</Text>
-							<TouchableOpacity onPress={handleAction.onCloseModal}>
-								<Ionicons name="close" size={24} color={colors.secondary} />
-							</TouchableOpacity>
-						</View>
+            <Modal visible={isShowModalFilter} onRequestClose={() => setIsShowModalFilter(false)} animationType="slide">
+                <View className="flex-1 bg-gray-100">
+                    <View className="p-4 flex-row items-center justify-between bg-white border-b border-gray-200">
+                        <Text className="text-lg" style={{fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Filter Options</Text>
+                        <TouchableOpacity onPress={handleAction.onCloseModal}>
+                            <Ionicons name="close" size={24} color={colors.secondary} />
+                        </TouchableOpacity>
+                    </View>
 
-						<ScrollView className="p-4">
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Registration Date
-								</Text>
-								<CAndroidDatepicker endDate={parseFormattedDate(params.findElectorRegister.prtg02)} startDate={parseFormattedDate(params.findElectorRegister.prtg01)} onChangeStart={(e) => handleAction.onChangeDate(e, false)} onChangeEnd={(e) => handleAction.onChangeDate(e, true)} />
-							</View>
+                    <ScrollView className="p-4">
+                        <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                            <Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                Registration Date
+                            </Text>
+                            <CAndroidDatepicker endDate={parseFormattedDate(params.findElectorRegister.prtg02)} startDate={parseFormattedDate(params.findElectorRegister.prtg01)} onChangeStart={(e) => handleAction.onChangeDate(e, false)} onChangeEnd={(e) => handleAction.onChangeDate(e, true)} />
+                        </View>
 
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Elector Type & Status Print
-								</Text>
-								<View className="flex flex-row gap-2">
-									<CListPicker isOutlinedMode={true} labelOutline="Elector Type" unique="filterElectorType" selectedValue={params.findElectorRegister?.prsts_ar} items={LIST_ELECTOR_TYPE} onSelect={(e) => updateParam("findElectorRegister", "prsts_ar", e)} />
-									<CListPicker isOutlinedMode={true} labelOutline="Status Print" unique="filterStatusPrint" selectedValue={params.findElectorRegister?.prcetak} items={LIST_ELECTOR_STATUS_PRINT_TYPE} onSelect={(e) => updateParam("findElectorRegister", "prcetak", e)} />
-								</View>
-							</View>
+                        <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                            <Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                Elector Type & Status Print
+                            </Text>
+                            <View className="flex flex-row gap-2">
+                                <CListPicker isOutlinedMode={true} labelOutline="Elector Type" unique="filterElectorType" selectedValue={params.findElectorRegister?.prsts_ar} items={LIST_ELECTOR_TYPE} onSelect={(e) => updateParam("findElectorRegister", "prsts_ar", e)} />
+                                <CListPicker isOutlinedMode={true} labelOutline="Status Print" unique="filterStatusPrint" selectedValue={params.findElectorRegister?.prcetak} items={LIST_ELECTOR_STATUS_PRINT_TYPE} onSelect={(e) => updateParam("findElectorRegister", "prcetak", e)} />
+                            </View>
+                        </View>
 
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Regions
-								</Text>
-								<CRegionPicker getDistrictUser={true} keyName={storeName} />
-							</View>
+                        <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                            <Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                Regions
+                            </Text>
+                            <CRegionPicker getDistrictUser={true} keyName={storeName} />
+                        </View>
 
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Shown Records
-								</Text>
+                        <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                            <Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                Shown Records
+                            </Text>
 
-								<View className="flex flex-row gap-2">
-									<CListPicker isOutlinedMode={true} labelOutline="Show per page" dropPosition="top" unique="filterShowPerPage" selectedValue={params.findElectorRegister?.p_rows_per_page} items={RECORDS_PER_PAGE_LIST} onSelect={(e) => updateParam("findElectorRegister", "p_rows_per_page", e)} />
-									<CListPicker isOutlinedMode={true} labelOutline="Order by" dropPosition="top" unique="filterSortOrderBy" selectedValue={params.findElectorRegister?.prorder} items={RECORDS_ORDER_BY_LIST} onSelect={(e) => updateParam("findElectorRegister", "prorder", e)} />
-								</View>
-							</View>
+                            <View className="flex flex-row gap-2">
+                                <CListPicker isOutlinedMode={true} labelOutline="Show per page" dropPosition="top" unique="filterShowPerPage" selectedValue={params.findElectorRegister?.p_rows_per_page} items={RECORDS_PER_PAGE_LIST} onSelect={(e) => updateParam("findElectorRegister", "p_rows_per_page", e)} />
+                                <CListPicker isOutlinedMode={true} labelOutline="Order by" dropPosition="top" unique="filterSortOrderBy" selectedValue={params.findElectorRegister?.prorder} items={RECORDS_ORDER_BY_LIST} onSelect={(e) => updateParam("findElectorRegister", "prorder", e)} />
+                            </View>
+                        </View>
 
-							<TouchableOpacity
-								onPress={() => handleAction.onApplyFilter()}
-								className="mb-2 mt-3 p-2 rounded-md items-center bg-blue-950 border"
-								style={{backgroundColor: colors.secondary}}
-							>
-								<Text className="text-lg" style={{color: "#FFF"}}>Apply</Text>
-							</TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => handleAction.onApplyFilter()}
+                            className="mb-2 mt-3 p-2 rounded-md items-center bg-blue-950 border"
+                            style={{backgroundColor: colors.secondary}}
+                        >
+                            <Text className="text-lg" style={{color: "#FFF"}}>Apply</Text>
+                        </TouchableOpacity>
 
-							<TouchableOpacity
-								onPress={() => handleAction.onResetFilter()}
-								className="p-2 rounded-md items-center border border-gray-200 bg-white"
-							>
-								<Text className="text-lg" style={{color: colors.secondary}}>Reset</Text>
-							</TouchableOpacity>
-						</ScrollView>
-					</View>
-				</Modal>
-			</Portal>
+                        <TouchableOpacity
+                            onPress={() => handleAction.onResetFilter()}
+                            className="p-2 rounded-md items-center border border-gray-200 bg-white"
+                        >
+                            <Text className="text-lg" style={{color: colors.secondary}}>Reset</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+            </Modal>
 		</>
 	);
 };

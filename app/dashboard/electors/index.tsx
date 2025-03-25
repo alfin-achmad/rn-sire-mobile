@@ -1,8 +1,18 @@
 import CTopHeaderSubMenu from "@/components/CTopHeaderSubMenu";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import { APP_ROUTES } from "@/constants/urls";
-import {ActivityIndicator, TextInput as BaseTextInput, Keyboard, ScrollView, Text, TouchableOpacity, View} from "react-native";
-import {Portal, TextInput, Modal} from "react-native-paper";
+import {
+    ActivityIndicator,
+    TextInput as BaseTextInput,
+    Keyboard,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+    SafeAreaView,
+    Modal
+} from "react-native";
+import {Portal, TextInput} from "react-native-paper";
 import {useEffect, useRef, useState} from "react";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "@/constants/colors";
@@ -16,6 +26,7 @@ import {LIST_ELECTOR_STATUS, RECORDS_ORDER_BY_LIST, RECORDS_PER_PAGE_LIST} from 
 import CListPicker from "@/components/CListPicker";
 import CRegionPicker from "@/components/CRegionPicker";
 import useRegion from "@/queries/useRegion";
+import {SafeAreaProvider} from "react-native-safe-area-context";
 
 const ElectorScreen = () => {
 	const storeName = "electorScreen"
@@ -43,18 +54,8 @@ const ElectorScreen = () => {
 			Keyboard.dismiss();
 		},
 		onShowModalFilter: () => {
-			const bindToModal = {
-				searchText, storeName,
-			}
-
-			router.replace({
-				pathname: APP_ROUTES.DASHBOARD.ELECTOR_FILTER_MODAL,
-				params: {
-					fromMainScreen: JSON.stringify(bindToModal),
-				}
-			})
-
-			Keyboard.dismiss();
+            setIsShowModalFilter(true);
+            Keyboard.dismiss();
 		},
 		onSearch: () => {
 			const isNumeric = detectInputType(searchText) === "Numeric";
@@ -88,14 +89,13 @@ const ElectorScreen = () => {
 				scrollViewRef.current.scrollTo({ y: scrollTo, animated: true });
 			}
 		},
-		onApplyFilter: (paramBindHistory={}) => {
-			const historySearchText = paramBindHistory?.searchText;
-			if (historySearchText === ""){
+		onApplyFilter: () => {
+			if (searchText === ""){
 				updateParam("findElector", "prkdelektor", "");
 				updateParam("findElector", "prnama", "");
 			} else {
-				const isNumeric = detectInputType(historySearchText) === "Numeric";
-				const formattedText = isNumeric ? reformatCodeElector(historySearchText) : historySearchText?.toUpperCase();
+				const isNumeric = detectInputType(searchText) === "Numeric";
+				const formattedText = isNumeric ? reformatCodeElector(searchText) : searchText?.toUpperCase();
 				updateParam("findElector", (isNumeric ? "prkdelektor":"prnama"), formattedText);
 			}
 
@@ -104,11 +104,12 @@ const ElectorScreen = () => {
 			updateParam("findElector", "prsuku", selectedRegions.succo);
 			updateParam("findElector", "praldeia", selectedRegions.aldeia);
 
+            setIsShowModalFilter(false);
 			fetchFindElector(true);
 			setIsSearch(true);
 		},
 		onCloseModal: () => {
-
+            setIsShowModalFilter(false)
 		},
 	};
 
@@ -230,6 +231,67 @@ const ElectorScreen = () => {
 					</>
 				)}
 			</View>
+
+            <Modal visible={isShowModalFilter} onRequestClose={() => setIsShowModalFilter(false)} animationType="slide">
+                <View className="flex-1 bg-gray-100">
+                    <View className="p-4 flex-row items-center justify-between bg-white border-b border-gray-200">
+                        <Text className="text-lg" style={{fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Filter Options</Text>
+                        <TouchableOpacity onPress={handleAction.onCloseModal}>
+                            <Ionicons name="close" size={24} color={colors.secondary} />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View className="flex-1">
+                        <ScrollView className="p-4 bg">
+                            <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                                <Text className="mb-1" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                    Father's Name
+                                </Text>
+                                <TextInput contentStyle={{ paddingLeft: 0 }} className="bg-white uppercase" mode="outlined" style={{height: 30, fontSize: 12, padding: 0}} onChangeText={(e) => updateParam("findElector", "prnmayah", (e).toUpperCase())} inputMode="text" value={params.findElector?.prnmayah} />
+                            </View>
+
+                            <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                                <Text className="mb-1" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                    Mother's Name
+                                </Text>
+                                <TextInput contentStyle={{ paddingLeft: 0 }} className="bg-white uppercase" mode="outlined" style={{height: 30, fontSize: 12, padding: 0}} onChangeText={(e) => updateParam("findElector", "prnmibu", (e).toUpperCase())} inputMode="text" value={params.findElector?.prnmibu} />
+                            </View>
+
+                            <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                                <Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                    Regions
+                                </Text>
+                                <CRegionPicker keyName={storeName} />
+                            </View>
+
+                            <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                                <Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                    Shown Records
+                                </Text>
+                                <View className="flex flex-row gap-2">
+                                    <CListPicker isOutlinedMode={true} labelOutline="Show per page" unique="filterShowPerPage" selectedValue={params.findElector?.p_rows_per_page} items={RECORDS_PER_PAGE_LIST} onSelect={(e) => updateParam("findElector", "p_rows_per_page", e)} />
+                                    <CListPicker isOutlinedMode={true} labelOutline="Order by" unique="filterSortOrderBy" selectedValue={params.findElector?.prorder} items={RECORDS_ORDER_BY_LIST} onSelect={(e) => updateParam("findElector", "prorder", e)} />
+                                </View>
+                            </View>
+
+                            <TouchableOpacity
+                                onPress={() => handleAction.onApplyFilter()}
+                                className="mb-2 mt-3 p-2 rounded-md items-center bg-blue-950 border"
+                                style={{backgroundColor: colors.secondary}}
+                            >
+                                <Text className="text-lg" style={{color: "#FFF"}}>Apply</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={() => handleAction.onResetFilter()}
+                                className="p-2 rounded-md items-center border border-gray-200 bg-white"
+                            >
+                                <Text className="text-lg" style={{color: colors.secondary}}>Reset</Text>
+                            </TouchableOpacity>
+                        </ScrollView>
+                    </View>
+                </View>
+            </Modal>
 		</>
 	);
 };
