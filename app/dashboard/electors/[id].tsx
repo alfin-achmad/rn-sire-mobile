@@ -29,7 +29,12 @@ const ElectorDetail = () => {
 
 	const handleAction = {
 		onBack: () => {
+			updateParam("findElector", "prkdelektor", "");
+
 			const backTo = fromScreen === APP_ROUTES.MAIN.SEARCH_BY_QR ? APP_ROUTES.MAIN.DASHBOARD : fromScreen;
+			const currentParam = params?.[keyParam];
+
+			currentParam.prkdelektor = ""
 			router.replace({
 				pathname: backTo,
 				params: { historySearchText: historySearchText, historyFromDetail: JSON.stringify(params?.[keyParam]) }

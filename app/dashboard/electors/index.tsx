@@ -24,7 +24,7 @@ const ElectorScreen = () => {
 	const {params, updateParam, updateParams, fetchFindElector, isLoading, data, resetParams} = useElector();
 	const {selectedRegions, resetRegions} = useRegion(storeName);
 	const router = useRouter();
-	const {historySearchText, historyFromDetail} = useLocalSearchParams();
+	const {historySearchText, historyFromDetail, fromFilterModalScreen} = useLocalSearchParams();
 	const [isSearch, setIsSearch] = useState(false);
 	const [searchText, setSearchText] = useState("");
 	const [isShowModalFilter, setIsShowModalFilter] = useState(false);
@@ -43,7 +43,17 @@ const ElectorScreen = () => {
 			Keyboard.dismiss();
 		},
 		onShowModalFilter: () => {
-			setIsShowModalFilter(true);
+			const bindToModal = {
+				searchText, storeName,
+			}
+
+			router.replace({
+				pathname: APP_ROUTES.DASHBOARD.ELECTOR_FILTER_MODAL,
+				params: {
+					fromMainScreen: JSON.stringify(bindToModal),
+				}
+			})
+
 			Keyboard.dismiss();
 		},
 		onSearch: () => {
@@ -67,7 +77,6 @@ const ElectorScreen = () => {
 		onResetFilter: () => {
 			resetRegions(storeName);
 			resetParams();
-			setIsShowModalFilter(false);
 			setSearchText("");
 			setIsSearch(false);
 		},
@@ -79,10 +88,15 @@ const ElectorScreen = () => {
 				scrollViewRef.current.scrollTo({ y: scrollTo, animated: true });
 			}
 		},
-		onApplyFilter: () => {
-			if (searchText === ""){
+		onApplyFilter: (paramBindHistory={}) => {
+			const historySearchText = paramBindHistory?.searchText;
+			if (historySearchText === ""){
 				updateParam("findElector", "prkdelektor", "");
 				updateParam("findElector", "prnama", "");
+			} else {
+				const isNumeric = detectInputType(historySearchText) === "Numeric";
+				const formattedText = isNumeric ? reformatCodeElector(historySearchText) : historySearchText?.toUpperCase();
+				updateParam("findElector", (isNumeric ? "prkdelektor":"prnama"), formattedText);
 			}
 
 			updateParam("findElector", "prdistrik", selectedRegions.district);
@@ -92,10 +106,31 @@ const ElectorScreen = () => {
 
 			fetchFindElector(true);
 			setIsSearch(true);
-			setIsShowModalFilter(false);
 		},
-		onCloseModal: () => setIsShowModalFilter(false),
+		onCloseModal: () => {
+
+		},
 	};
+
+	useEffect(() => {
+		if(fromFilterModalScreen){
+			const {action, history} = JSON.parse(fromFilterModalScreen);
+			const actionMap = {
+				apply: handleAction.onApplyFilter,
+				reset: handleAction.onResetFilter,
+				closeModal: handleAction.onCloseModal
+			}
+
+			if(actionMap[action]){
+				setSearchText(history?.searchText)
+				const bindHistory = {
+					searchText: history?.searchText
+				}
+
+				actionMap[action](bindHistory)
+			}
+		}
+	}, [fromFilterModalScreen]);
 
 	useEffect(() => {
 		if(historyFromDetail && historyFromDetail !== ""){
@@ -195,74 +230,6 @@ const ElectorScreen = () => {
 					</>
 				)}
 			</View>
-
-			<Portal>
-				<Modal
-					dismissable={true}
-					visible={isShowModalFilter}
-					onDismiss={handleAction.onCloseModal}
-					contentContainerStyle={{
-						flex: 1,
-					}}
-				>
-					<View className="flex-1 bg-gray-100">
-						<View className="p-4 flex-row items-center justify-between bg-white border-b border-gray-200">
-							<Text className="text-lg" style={{fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Filter Options</Text>
-							<TouchableOpacity onPress={handleAction.onCloseModal}>
-								<Ionicons name="close" size={24} color={colors.secondary} />
-							</TouchableOpacity>
-						</View>
-
-						<ScrollView className="p-4 bg">
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-1" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Father's Name
-								</Text>
-								<TextInput contentStyle={{ paddingLeft: 0 }} className="bg-white uppercase" mode="outlined" style={{height: 30, fontSize: 12, padding: 0}} onChangeText={(e) => updateParam("findElector", "prnmayah", (e).toUpperCase())} inputMode="text" value={params.findElector?.prnmayah} />
-							</View>
-
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-1" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Mother's Name
-								</Text>
-								<TextInput contentStyle={{ paddingLeft: 0 }} className="bg-white uppercase" mode="outlined" style={{height: 30, fontSize: 12, padding: 0}} onChangeText={(e) => updateParam("findElector", "prnmibu", (e).toUpperCase())} inputMode="text" placeholder={params.findElector?.prnmibu} />
-							</View>
-
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Regions
-								</Text>
-								<CRegionPicker keyName={storeName} />
-							</View>
-
-							<View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
-								<Text className="mb-3" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
-									Shown Records
-								</Text>
-								<View className="flex flex-row gap-2">
-									<CListPicker isOutlinedMode={true} labelOutline="Show per page" unique="filterShowPerPage" selectedValue={params.findElector?.p_rows_per_page} items={RECORDS_PER_PAGE_LIST} onSelect={(e) => updateParam("findElector", "p_rows_per_page", e)} />
-									<CListPicker isOutlinedMode={true} labelOutline="Order by" unique="filterSortOrderBy" selectedValue={params.findElector?.prorder} items={RECORDS_ORDER_BY_LIST} onSelect={(e) => updateParam("findElector", "prorder", e)} />
-								</View>
-							</View>
-
-							<TouchableOpacity
-								onPress={() => handleAction.onApplyFilter()}
-								className="mb-2 mt-3 p-2 rounded-md items-center bg-blue-950 border"
-								style={{backgroundColor: colors.secondary}}
-							>
-								<Text className="text-lg" style={{color: "#FFF"}}>Apply</Text>
-							</TouchableOpacity>
-
-							<TouchableOpacity
-								onPress={() => handleAction.onResetFilter()}
-								className="p-2 rounded-md items-center border border-gray-200 bg-white"
-							>
-								<Text className="text-lg" style={{color: colors.secondary}}>Reset</Text>
-							</TouchableOpacity>
-						</ScrollView>
-					</View>
-				</Modal>
-			</Portal>
 		</>
 	);
 };
