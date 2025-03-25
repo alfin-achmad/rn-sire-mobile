@@ -16,6 +16,7 @@ export const APP_ROUTES = {
 	},
 	DASHBOARD: {
 		ELECTOR: "/dashboard/electors",
+		ELECTOR_FILTER_MODAL: "/dashboard/electors/filter-modal",
 		VERIFY_ELECTOR: "/dashboard/verify-elector",
 		DOUBLE_ELECTOR: "/dashboard/double-elector",
 		USERS: "/dashboard/users",
