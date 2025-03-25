@@ -41,8 +41,8 @@ export default function TabsLayout() {
 								style={{
 									width: 50,
 									height: 50,
-									backgroundColor: colors.secondary,
-									borderRadius: 20,
+									backgroundColor: colors.quaternary,
+									borderRadius: 10,
 									justifyContent: "center",
 									alignItems: "center",
 									marginBottom: 30,
