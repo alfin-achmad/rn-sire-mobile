@@ -11,7 +11,7 @@ const CAuthHeader = () => {
 				<Text style={{...globalStyles.textBold, color: colors.secondary}} className="text-3xl uppercase">
 					SIRE Mobile
 				</Text>
-				<Text style={{...globalStyles.text, color: colors.secondary}} className="text-sm uppercase">
+				<Text style={{...globalStyles.text, color: colors.secondary, lineHeight: 14}} className="text-sm uppercase">
 					Informasaun Resenseamento Eleitoral
 				</Text>
 			</View>

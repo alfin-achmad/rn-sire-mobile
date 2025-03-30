@@ -100,19 +100,19 @@ const DashboardScreen = () => {
 
 				<ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex flex-row" pagingEnabled>
 					<View style={{ width: screenWidth }} className="px-4">
-						<CDashboardStats title="Elector Overview" data={data} section="total" showPercentMan={true} showPercentWoman={true} showPercentTotal={false} />
+						<CDashboardStats title="Elector Overview" data={data} section="total" showPercentMan={true} showPercentWoman={true} showPercentTotal={false} isLoading={isLoading} />
 					</View>
 					<View style={{ width: screenWidth }} className="px-4">
-						<CDashboardStats title="Total Registered Electors" data={data} section="existing" showPercentMan={false} showPercentWoman={false} showPercentTotal={false} />
+						<CDashboardStats title="Total Registered Electors" data={data} section="existing" showPercentMan={false} showPercentWoman={false} showPercentTotal={false} isLoading={isLoading} />
 					</View>
 					<View style={{ width: screenWidth }} className="px-4">
-						<CDashboardStats title="Elector Actualization Summary" data={data} section="actualization" showPercentMan={false} showPercentWoman={false} showPercentTotal={true} />
+						<CDashboardStats title="Elector Actualization Summary" data={data} section="actualization" showPercentMan={false} showPercentWoman={false} showPercentTotal={true} isLoading={isLoading} />
 					</View>
 					<View style={{ width: screenWidth }} className="px-4">
-						<CDashboardStats title="Outstanding Electors" data={data} section="outstanding" showPercentMan={false} showPercentWoman={false} showPercentTotal={true} />
+						<CDashboardStats title="Outstanding Electors" data={data} section="outstanding" showPercentMan={false} showPercentWoman={false} showPercentTotal={true} isLoading={isLoading} />
 					</View>
 					<View style={{ width: screenWidth }} className="px-4">
-						<CDashboardStats title="Newly Registered Electors" data={data} section="registration" showPercentMan={false} showPercentWoman={false} showPercentTotal={false} />
+						<CDashboardStats title="Newly Registered Electors" data={data} section="registration" showPercentMan={false} showPercentWoman={false} showPercentTotal={false} isLoading={isLoading} />
 					</View>
 				</ScrollView>
 

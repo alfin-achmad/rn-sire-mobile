@@ -13,11 +13,17 @@ type ElectorStoreState = {
 		findDoubleElectorRegister: any;
 		verifyElectorRegister: any;
 		findElector: any;
+		findElectorByID: any;
+        findElectorRegisterByNoReg: any;
+        findElectorDoubleID: any;
 	};
 	updateParam: (paramKey: keyof ElectorStoreState["params"], key: string, value: any) => void;
 	updateParams: (paramKey: keyof ElectorStoreState["params"], newParams: Partial<ElectorStoreState["params"][keyof ElectorStoreState["params"]]>) => void;
 	setDataByParamKey: (paramKey: keyof ElectorStoreState["data"], value: any, reset: boolean) => void;
 	resetParams: () => void;
+    resetFindElectorByID: () => void;
+    resetFindElectorByNoReg: () => void;
+    resetFindElectorDoubleID: () => void;
 };
 
 const initialParams = {
@@ -90,6 +96,8 @@ export const useElectorStore = create<ElectorStoreState>((set) => ({
 		findDoubleElectorRegister: null,
 		verifyElectorRegister: null,
 		findElector: null,
+        findElectorByID: null,
+        findElectorRegisterByNoReg: null,
 	},
 
 	updateParam: (paramKey, key, value) =>
@@ -129,6 +137,30 @@ export const useElectorStore = create<ElectorStoreState>((set) => ({
 			},
 		})),
 
+    resetFindElectorByID: () =>
+        set((state) => ({
+            data: {
+                ...state.data,
+                findElectorByID: null,
+            },
+        })),
+
+    resetFindElectorByNoReg: () =>
+        set((state) => ({
+            data: {
+                ...state.data,
+                findElectorRegisterByNoReg: null,
+            },
+        })),
+
+    resetFindElectorDoubleByID: () =>
+        set((state) => ({
+            data: {
+                ...state.data,
+                resetFindElectorDoubleID: null,
+            },
+        })),
+
 	resetParams: () =>
 		set({
 			params: initialParams,
@@ -137,6 +169,9 @@ export const useElectorStore = create<ElectorStoreState>((set) => ({
 				findDoubleElectorRegister: null,
 				verifyElectorRegister: null,
 				findElector: null,
+                findElectorByID: null,
+                findElectorRegisterByNoReg: null,
+                findElectorDoubleID: null,
 			},
 		}),
 }));

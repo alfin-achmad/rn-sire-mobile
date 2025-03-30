@@ -4,17 +4,17 @@ import {dataAPI} from "@/api/internal";
 import {showToast} from "@/helpers/general";
 
 const useElector = () => {
-	const {params, updateParam, updateParams, setDataByParamKey, data, resetParams} = useElectorStore();
+	const {params, updateParam, updateParams, setDataByParamKey, data, resetParams, resetFindElectorByID, resetFindElectorByNoReg, resetFindElectorDoubleByID} = useElectorStore();
 
 	const fetchElectorNeedVerify = useMutation({
-		mutationFn: async ({ reset = false }) => {
+		mutationFn: async ({ reset = false, byid = false }) => {
 			const { findElectorRegister } = params;
 			const response = await dataAPI.findElectorRegister(findElectorRegister);
-			return { data: response, reset };
+            return { data: response, reset, byid };
 		},
-		onSuccess: async ({ data, reset }) => {
-			setDataByParamKey("findElectorRegister", data, reset)
-		},
+		onSuccess: async ({ data, reset, byid }) => {
+            setDataByParamKey((byid ?"findElectorRegisterByNoReg":"findElectorRegister"), data, reset)
+        },
 		onError: (error: any) => {
 			const errorMessage =
 				error.response?.data?.message || "Fetch data failed. Please try again.";
@@ -39,13 +39,13 @@ const useElector = () => {
 	});
 
 	const findElector = useMutation({
-		mutationFn: async ({ reset = false }) => {
+		mutationFn: async ({ reset = false, byid = false }) => {
 			const { findElector } = params;
 			const response = await dataAPI.findElector(findElector);
-			return { data: response, reset };
+			return { data: response, reset, byid };
 		},
-		onSuccess: async ({ data, reset }) => {
-			setDataByParamKey("findElector", data, reset)
+		onSuccess: async ({ data, reset, byid }) => {
+			setDataByParamKey((byid ?"findElectorByID":"findElector"), data, reset)
 		},
 		onError: (error: any) => {
 			const errorMessage =
@@ -55,14 +55,14 @@ const useElector = () => {
 	});
 
 	const findDoubleElector = useMutation({
-		mutationFn: async ({ reset = false }) => {
+        mutationFn: async ({ reset = false, byid = false }) => {
 			const { findDoubleElectorRegister } = params;
 			const response = await dataAPI.findDoubleElectorRegister(findDoubleElectorRegister);
-			return { data: response, reset };
+            return { data: response, reset, byid };
 		},
-		onSuccess: async ({ data, reset }) => {
-			setDataByParamKey("findDoubleElectorRegister", data, reset)
-		},
+        onSuccess: async ({ data, reset, byid }) => {
+            setDataByParamKey((byid ?"findElectorDoubleID":"findDoubleElectorRegister"), data, reset)
+        },
 		onError: (error: any) => {
 			const errorMessage =
 				error.response?.data?.message || "Fetch data failed. Please try again.";
@@ -72,15 +72,18 @@ const useElector = () => {
 
 	return {
 		params,
-		fetchElectorVerifyList: (reset = false) => fetchElectorNeedVerify.mutate({ reset }),
-		fetchFindElector: (reset = false) => findElector.mutate({ reset }),
-		fetchFindDoubleElector: (reset = false) => findDoubleElector.mutate({ reset }),
+		fetchElectorVerifyList: (reset = false, byid = false) => fetchElectorNeedVerify.mutate({ reset, byid }),
+		fetchFindElector: (reset = false, byid = false) => findElector.mutate({ reset, byid }),
+		fetchFindDoubleElector: (reset = false, byid = false) => findDoubleElector.mutate({ reset, byid }),
 		processVerifyElector: verifyElector.mutate,
 		data,
 		updateParam,
 		updateParams,
 		isLoading: fetchElectorNeedVerify.isPending || findElector.isPending || findDoubleElector.isPending,
-		resetParams
+		resetParams,
+        resetFindElectorByID,
+        resetFindElectorByNoReg,
+        resetFindElectorDoubleByID
 	}
 }
 

@@ -35,7 +35,6 @@ const ElectorScreen = () => {
 	const {params, updateParam, updateParams, fetchFindElector, isLoading, data, resetParams} = useElector();
 	const {selectedRegions, resetRegions} = useRegion(storeName);
 	const router = useRouter();
-	const {historySearchText, historyFromDetail, fromFilterModalScreen} = useLocalSearchParams();
 	const [isSearch, setIsSearch] = useState(false);
 	const [searchText, setSearchText] = useState("");
 	const [isShowModalFilter, setIsShowModalFilter] = useState(false);
@@ -95,8 +94,14 @@ const ElectorScreen = () => {
 				updateParam("findElector", "prnama", "");
 			} else {
 				const isNumeric = detectInputType(searchText) === "Numeric";
-				const formattedText = isNumeric ? reformatCodeElector(searchText) : searchText?.toUpperCase();
-				updateParam("findElector", (isNumeric ? "prkdelektor":"prnama"), formattedText);
+
+                if (isNumeric) {
+                    updateParam("findElector", "prkdelektor", reformatCodeElector(searchText));
+                    updateParam("findElector", "prnama", "");
+                } else {
+                    updateParam("findElector", "prkdelektor", "");
+                    updateParam("findElector", "prnama", searchText.toUpperCase());
+                }
 			}
 
 			updateParam("findElector", "prdistrik", selectedRegions.district);
@@ -112,38 +117,6 @@ const ElectorScreen = () => {
             setIsShowModalFilter(false)
 		},
 	};
-
-	useEffect(() => {
-		if(fromFilterModalScreen){
-			const {action, history} = JSON.parse(fromFilterModalScreen);
-			const actionMap = {
-				apply: handleAction.onApplyFilter,
-				reset: handleAction.onResetFilter,
-				closeModal: handleAction.onCloseModal
-			}
-
-			if(actionMap[action]){
-				setSearchText(history?.searchText)
-				const bindHistory = {
-					searchText: history?.searchText
-				}
-
-				actionMap[action](bindHistory)
-			}
-		}
-	}, [fromFilterModalScreen]);
-
-	useEffect(() => {
-		if(historyFromDetail && historyFromDetail !== ""){
-			updateParams("findElector", JSON.parse(historyFromDetail))
-			setIsSearch(true);
-			if(historySearchText && historySearchText !== ""){
-				setIsSearch(true);
-				setSearchText(historySearchText)
-			}
-			fetchFindElector(true);
-		}
-	}, [historyFromDetail, historySearchText]);
 
 	return (
 		<>

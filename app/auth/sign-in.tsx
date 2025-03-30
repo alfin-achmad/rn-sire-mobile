@@ -99,7 +99,7 @@ const SignInScreen = () => {
 							labelStyle={{
 								fontSize: 16,
 								fontWeight: "bold",
-								paddingVertical: 8,
+								paddingVertical: 3,
 								fontFamily: "IBMPlexSans_Bold",
 								color: "#FFF"
 							}}
@@ -117,14 +117,14 @@ const SignInScreen = () => {
 						<BasicText
 							className="mt-2.5 text-center"
 							style={{
-								fontSize: 15,
+								fontSize: 14,
 								fontFamily: "IBMPlexSans_Bold",
 								color: colors.secondary,
 							}}
 						>
 							Forgot Password ?
 						</BasicText>
-						<View className="flex-row justify-center mt-5">
+						<View className="flex-row justify-center mt-1">
 							<Text style={{ fontSize: 14, fontFamily: "IBMPlexSans", color: colors.secondary }}>
 								Don't have an account?{" "}
 							</Text>

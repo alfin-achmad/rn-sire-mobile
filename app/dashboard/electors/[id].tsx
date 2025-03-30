@@ -12,33 +12,26 @@ import {APP_ROUTES} from "@/constants/urls";
 
 const ElectorDetail = () => {
 	const {user} = useAuth();
-	const {processVerifyElector, updateParam, fetchFindElector, data, params, resetParams} = useElector();
+	const {processVerifyElector, updateParam, fetchFindElector, data, params, resetParams, resetFindElectorByID} = useElector();
 	const [verifyDialog, setVerifyDialog] = useState(false);
 	const {id, fromScreen, historySearchText, keyParam} = useLocalSearchParams();
-	const electorByID = data?.findElector?.rows[0]
+	const electorByID = data?.findElectorByID?.rows[0]
 
 	useEffect(() => {
+        resetFindElectorByID()
 		if (id){
 			if (fromScreen === APP_ROUTES.MAIN.SEARCH_BY_QR){
 				resetParams();
 			}
 			updateParam("findElector", "prkdelektor", id)
-			fetchFindElector(true)
+			fetchFindElector(true, true)
 		}
 	}, [id]);
 
 	const handleAction = {
 		onBack: () => {
-			updateParam("findElector", "prkdelektor", "");
-
-			const backTo = fromScreen === APP_ROUTES.MAIN.SEARCH_BY_QR ? APP_ROUTES.MAIN.DASHBOARD : fromScreen;
-			const currentParam = params?.[keyParam];
-
-			currentParam.prkdelektor = ""
-			router.replace({
-				pathname: backTo,
-				params: { historySearchText: historySearchText, historyFromDetail: JSON.stringify(params?.[keyParam]) }
-			})
+            resetFindElectorByID()
+            router.back();
 		},
 		onPressVerify: () => {
 			updateParam("verifyElectorRegister", "noPendaftaran", electorByID?.NO_PENDAFTARAN);
