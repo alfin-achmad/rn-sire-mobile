@@ -56,3 +56,8 @@ export const LIST_ELECTOR_STATUS_PRINT_TYPE = [
 	{ label: "Yes", value: "YA" },
 	{ label: "No", value: "TIDAK" },
 ];
+
+export const LIST_ELECTOR_REGISTER_TYPE = [
+    { label: "Actualization", value: "AR" },
+    { label: "Old", value: "OLD" },
+];

@@ -24,7 +24,7 @@ const CItemsElector = ({ detailElector, fromScreen='' }) => {
 
 	return (
 		<View className="relative mb-1 h-26 bg-white border border-gray-300 rounded-md p-2 flex flex-row">
-			{detailElector?.AR === "AR" || (fromScreen === APP_ROUTES.DASHBOARD.VERIFY_ELECTOR && detailElector?.VERIFIKASI_STATUS === "DISETUJUI") && (
+			{((fromScreen === APP_ROUTES.DASHBOARD.ELECTOR && detailElector?.AR === "AR") || (fromScreen === APP_ROUTES.DASHBOARD.VERIFY_ELECTOR && detailElector?.VERIFIKASI_STATUS === "DISETUJUI")) && (
 				<View className="absolute top-1 right-1 border-blue-950 px-2 py-0.5 rounded-full flex-row items-center">
 					<Ionicons name="checkmark-circle" size={12} color={colors.secondary} />
 					<Text className=" text-xs" style={{ fontFamily: "IBMPlexSans", color: colors.secondary }}>
@@ -45,7 +45,7 @@ const CItemsElector = ({ detailElector, fromScreen='' }) => {
 					{detailElector?.NO_PENDAFTARAN || "-"} / {detailElector?.KODE_ELEKTOR}
 				</Text>
 				<Text style={{ fontFamily: "IBMPlexSans", color: colors.secondary, fontSize: 12 }}>
-					{detailElector?.TEMPAT_LAHIR || "UNKNOWN"}, {detailElector?.TANGGAL_LAHIR}
+					{detailElector?.TANGGAL_LAHIR}
 				</Text>
 				<Text style={{ fontFamily: "IBMPlexSans", color: colors.secondary, fontSize: 10 }}>
 					{detailElector?.NAMA_DISTRIK} → {detailElector?.NAMA_SUBDISTRIK} → {detailElector?.NAMA_SUKO} → {detailElector?.NAMA_ALDEIA}

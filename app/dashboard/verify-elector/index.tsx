@@ -95,8 +95,8 @@ const VerifyElectorScreen = () => {
                 const isNumeric = detectInputType(searchText) === "Numeric";
 
                 updateParam("findElectorRegister", "prnopendaftaran", "ALL");
-                updateParam("findElectorRegister", "prkdelektor", isNumeric ? formattedText : "");
-                updateParam("findElectorRegister", "prnama", isNumeric ? "" : formattedText);
+                updateParam("findElectorRegister", "prkdelektor", isNumeric ? formattedText : "ALL");
+                updateParam("findElectorRegister", "prnama", isNumeric ? "ALL" : formattedText);
                 updateParam("findElectorRegister", "prdistrik", user?.kode_distrik);
             }
 

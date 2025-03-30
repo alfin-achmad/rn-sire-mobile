@@ -9,6 +9,7 @@ const DropdownComponent = ({
 	                           onSelect,
 	                           dropPosition = "auto",
 	                           isOutlinedMode = false,
+                                ableToSearch = true,
 	                           labelOutline = "Select Item", // Default label jika isOutlinedMode aktif
                            }) => {
 	const [isFocus, setIsFocus] = useState(false);
@@ -28,7 +29,7 @@ const DropdownComponent = ({
 						inputSearchStyle={styles.inputSearchStyle}
 						iconStyle={styles.iconStyle}
 						data={items}
-						search
+						search={ableToSearch}
 						maxHeight={300}
 						labelField="label"
 						dropdownPosition={dropPosition}
@@ -53,7 +54,7 @@ const DropdownComponent = ({
 					inputSearchStyle={styles.inputSearchStyle}
 					iconStyle={styles.iconStyle}
 					data={items}
-					search
+					search={ableToSearch}
 					maxHeight={300}
 					labelField="label"
 					dropdownPosition={dropPosition}

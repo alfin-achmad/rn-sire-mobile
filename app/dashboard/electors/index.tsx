@@ -22,7 +22,12 @@ import {useAuth} from "@/queries/useAuth";
 import {detectInputType, formatNumber, reformatCodeElector} from "@/helpers/general";
 import CShowResult from "@/components/CShowResult";
 import CFilterByStatusLists from "@/components/CFilterByStatusLists";
-import {LIST_ELECTOR_STATUS, RECORDS_ORDER_BY_LIST, RECORDS_PER_PAGE_LIST} from "@/constants/general";
+import {
+    LIST_ELECTOR_REGISTER_TYPE,
+    LIST_ELECTOR_STATUS,
+    RECORDS_ORDER_BY_LIST,
+    RECORDS_PER_PAGE_LIST
+} from "@/constants/general";
 import CListPicker from "@/components/CListPicker";
 import CRegionPicker from "@/components/CRegionPicker";
 import useRegion from "@/queries/useRegion";
@@ -173,7 +178,7 @@ const ElectorScreen = () => {
 								<>
 									{data.findElector.rows.map((elector, index) => (
 										<TouchableOpacity key={index} onPress={() => router.push({pathname: `/dashboard/electors/${elector?.KODE_ELEKTOR}`, params: {keyParam: "findElector", historySearchText: searchText, fromScreen: APP_ROUTES.DASHBOARD.ELECTOR}})}>
-											<CItemsElector key={index} detailElector={elector} />
+											<CItemsElector key={index} detailElector={elector} fromScreen={APP_ROUTES.DASHBOARD.ELECTOR} />
 										</TouchableOpacity>
 									))}
 
@@ -228,6 +233,13 @@ const ElectorScreen = () => {
                                     Mother's Name
                                 </Text>
                                 <TextInput contentStyle={{ paddingLeft: 0 }} className="bg-white uppercase" mode="outlined" style={{height: 30, fontSize: 12, padding: 0}} onChangeText={(e) => updateParam("findElector", "prnmibu", (e).toUpperCase())} inputMode="text" value={params.findElector?.prnmibu} />
+                            </View>
+
+                            <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
+                                <Text className="mb-1" style={{fontFamily: "IBMPlexSans_Bold", fontSize: 12, color: colors.secondary}}>
+                                    Actualization / Registration
+                                </Text>
+                                <CListPicker isOutlinedMode={false} labelOutline="Order by" unique="filterSortOrderBy" ableToSearch={false} selectedValue={params.findElector?.prsts_ar} items={LIST_ELECTOR_REGISTER_TYPE} onSelect={(e) => updateParam("findElector", "prsts_ar", e)} />
                             </View>
 
                             <View className="bg-white border border-gray-300 p-2 rounded-md mb-1">
