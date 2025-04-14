@@ -1,11 +1,13 @@
-# 📱 SIRE Mobile APP
+# SIRE Mobile APP
 
 ## Overview
 Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses aktualisasi dan registrasi elektor secara digital di Timor Leste. Dengan aplikasi ini, petugas lapangan dapat melakukan verifikasi data, mengumpulkan informasi pemilih, dan memperbarui status registrasi secara real-time, langsung dari perangkat mobile mereka.
 
+Lihat dokumentasi lengkap di Google Docs: [Dokumentasi SIRE Mobile](https://docs.google.com/document/d/1vnWGxGD_ILDcw-QvaWKK9VOWUvge465vAca425pfLrs/edit?tab=t.0)
+
 ---
 
-## 🔐 Login
+## Login
 - **Fungsi**:  
   Pengguna dapat masuk ke aplikasi menggunakan email / kode elektor (10 Digit) dan password.
 
@@ -15,7 +17,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
   ```json
   {
     "kodeUser": "user@example.com" / "0000000001",
-    "password": "••••••••"
+    "password": "password"
   }
   ```
 
@@ -24,7 +26,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## 📊 Dashboard
+## Dashboard
 - **Fungsi**:  
   Dashboard menyediakan ringkasan data yang komprehensif dan akses cepat ke fitur utama aplikasi. Halaman ini menampilkan berbagai informasi penting terkait status registrasi dan aktualisasi elektor melalui antarmuka yang mudah dipahami.  
   Terdapat slide interaktif yang menampilkan:
@@ -59,7 +61,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## 📋 Elector
+## Elector
 - **Fungsi**:  
   Menampilkan keseluruhan data elektor yang mencakup baik elektor yang telah melakukan aktualisasi maupun elektor yang baru terdaftar.
 
@@ -92,7 +94,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## ✔️ Verify Elector
+## Verify Elector
 - **Fungsi**:  
   Layar ini memungkinkan pengguna dapat melakukan pencarian dan pengecekan status setiap elektor, serta memastikan apakah elektor telah terdaftar dengan benar atau masih perlu melakukan langkah-langkah lebih lanjut untuk menyelesaikan proses registrasi dan aktualisasi.
 
@@ -132,7 +134,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## ✔️ Double Elector
+## Double Elector
 - **Fungsi**:  
     Fitur ini membantu memastikan bahwa tidak ada elektor yang terdaftar lebih dari sekali, yang dapat menyebabkan ketidaksesuaian dalam proses registrasi dan aktualisasi. Pengguna dapat mencari elektor yang memiliki data duplikat berdasarkan kriteria tertentu, seperti nama, nomor identitas, atau kode elektor, untuk memastikan integritas data dalam sistem.
 
@@ -158,7 +160,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## ✔️ Detail Elector
+## Detail Elector
 - **Fungsi**:  
   Fitur **Detail Elector** memberikan akses untuk melihat informasi lengkap mengenai setiap elektor yang terdaftar dalam sistem. Pengguna dapat memeriksa data elektor secara mendetail, termasuk informasi pribadi, status registrasi, aktualisasi, serta riwayat perubahan data.  
   Selain itu, dalam halaman **Detail Elector**, terdapat data biometrik yang terhubung dengan elektor, yaitu:
@@ -193,7 +195,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## ✔️ Search Elector Detail by Scan QR
+## Search Elector Detail by Scan QR
 - **Fungsi**:  
   Fitur **Search Elector by Scan QR** memungkinkan pengguna untuk mencari data elektor dengan cepat menggunakan pemindaian kode QR yang terhubung dengan identitas elektor. Fitur ini mempermudah proses pencarian elektor di sistem dengan hanya memindai QR code yang telah terdaftar, tanpa perlu memasukkan data manual.  
   Tombol **Scan QR** dapat ditemukan di menu utama aplikasi, memberikan akses langsung ke fitur ini. Pengguna cukup menekan tombol tersebut untuk membuka pemindai QR, yang kemudian akan mencari elektor yang relevan dalam sistem.
@@ -226,17 +228,17 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## 📦 Other Features (On Progress)
+## Other Features (On Progress)
 
-### 🔔 Notifikasi
+### Notifikasi
 - **Fungsi**:  
   Fitur **Notifikasi** memungkinkan aplikasi untuk mengirimkan pemberitahuan kepada pengguna mengenai pembaruan atau tindakan yang perlu dilakukan. Notifikasi ini dapat mencakup informasi penting terkait status registrasi atau aktualisasi elektor, serta pengingat atau peringatan lainnya yang relevan. Fitur ini masih dalam proses pengerjaan dan akan tersedia untuk meningkatkan interaksi pengguna dengan aplikasi.
 
-### 📜 Log Aktivitas
+### Log Aktivitas
 - **Fungsi**:  
   Fitur **Log Aktivitas** memungkinkan pencatatan setiap tindakan atau perubahan yang dilakukan oleh pengguna dalam aplikasi. Fitur ini penting untuk memastikan transparansi dan audit trail dalam aplikasi, sehingga setiap tindakan dapat dilacak dan diperiksa bila diperlukan. Log Aktivitas sedang dalam tahap pengembangan untuk memastikan fungsionalitas yang akurat dan efisien.
 
-### 👤 Detail Account
+### Detail Account
 - **Fungsi**:  
   Fitur **Detail Account** menyediakan informasi lengkap mengenai akun pengguna, termasuk pengaturan akun, preferensi, dan status pengguna dalam aplikasi. Fitur ini juga mencakup fasilitas **ganti bahasa**, memungkinkan pengguna untuk memilih bahasa yang digunakan dalam aplikasi sesuai dengan preferensi mereka. Fasilitas ini bertujuan untuk meningkatkan kenyamanan pengguna dengan menyediakan antarmuka dalam berbagai bahasa. Fitur ini masih dalam tahap pengembangan untuk memastikan kemudahan akses dan penggunaan.
 
@@ -244,7 +246,7 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ---
 
-## 📝 Catatan Tambahan
+## Catatan Tambahan
 - Versi Aplikasi: 1.0.0
 - Tanggal Rilis: 30 Maret 2025
 - Catatan bug atau hal-hal yang perlu diimprove
