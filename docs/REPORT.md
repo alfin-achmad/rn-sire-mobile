@@ -1,6 +1,6 @@
-# 📱 Mobile App Report
+# 📱 SIRE Mobile APP
 
-## 🢾 Overview
+## Overview
 Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses aktualisasi dan registrasi elektor secara digital di Timor Leste. Dengan aplikasi ini, petugas lapangan dapat melakukan verifikasi data, mengumpulkan informasi pemilih, dan memperbarui status registrasi secara real-time, langsung dari perangkat mobile mereka.
 
 ---
@@ -246,6 +246,6 @@ Aplikasi ini merupakan platform mobile yang dirancang untuk mendukung proses akt
 
 ## 📝 Catatan Tambahan
 - Versi Aplikasi: 1.0.0
-- Tanggal Rilis: 14 April 2025
+- Tanggal Rilis: 30 Maret 2025
 - Catatan bug atau hal-hal yang perlu diimprove
 
