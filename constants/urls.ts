@@ -19,8 +19,10 @@ export const APP_ROUTES = {
 		ELECTOR_FILTER_MODAL: "/dashboard/electors/filter-modal",
 		VERIFY_ELECTOR: "/dashboard/verify-elector",
 		DOUBLE_ELECTOR: "/dashboard/double-elector",
+		INACTIVE_ELECTOR: "/dashboard/inactive-elector",
 		USERS: "/dashboard/users",
 		REGIONS: "/dashboard/regions",
-		REPORTS: "/dashboard/reports",
+		COUNTRIES: "/dashboard/countries",
+		CARD: "/dashboard/card",
 	}
 } as const;

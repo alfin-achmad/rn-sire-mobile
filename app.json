@@ -35,7 +35,7 @@
     },
     "android": {
       "package": "com.kaspiani.SIREMobile",
-      "softwareKeyboardLayoutMode": "pan",
+      "softwareKeyboardLayoutMode": "resize",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"

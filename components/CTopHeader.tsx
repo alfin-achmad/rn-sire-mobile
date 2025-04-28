@@ -17,7 +17,7 @@ const CTopHeader = () => {
 	}
 
 	return (
-		<Appbar.Header style={{borderBottomWidth: 2, borderColor: "#E5E7EB"}}>
+		<Appbar.Header style={{borderBottomWidth: 2, borderColor: "#E5E7EB", backgroundColor: "#FFF"}}>
 			<View className="pl-4 flex-row flex-1 items-center">
 				<Image
 					source={require("@/assets/image/stae-logo.png")}

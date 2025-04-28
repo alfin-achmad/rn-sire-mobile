@@ -47,7 +47,7 @@ const SignInScreen = () => {
 				>
 					<CAuthHeader />
 
-					<View className={`flex-1 items-center justify-center w-full ${isSmallScreen ? "mt-20" : ""}`}>
+					<View className="flex-1 items-center justify-center w-full">
 						<Image
 							source={require("@/assets/image/bg-signin-2.jpg")}
 							style={{ width: "100%", height: "100%", resizeMode: "contain" }}
@@ -63,13 +63,21 @@ const SignInScreen = () => {
 							mode="outlined"
 							keyboardType="email-address"
 							autoCapitalize="none"
-							left={<TextInput.Icon icon="account-box-outline" />}
+							left={<TextInput.Icon icon="account-box-outline" color={colors.secondary} />}
 							style={[
-								{ backgroundColor: "#FFF", color: "#000" },
+								{ backgroundColor: "#FFF" },
 								isLoading && { opacity: 1 },
 							]}
+							contentStyle={{ color: colors.secondary }}
+							outlineStyle={{borderColor: colors.secondary}}
 							onChangeText={setEmail}
 							editable={!isLoading}
+							theme={{
+								colors: {
+									primary: colors.secondary,
+									onSurfaceVariant: colors.secondary,
+								},
+							}}
 						/>
 						<TextInput
 							textContentType="none"
@@ -81,18 +89,27 @@ const SignInScreen = () => {
 							value={password}
 							secureTextEntry={secureTextEntry}
 							onChangeText={setPassword}
-							left={<TextInput.Icon icon="key" />}
+							left={<TextInput.Icon icon="key" color={colors.secondary} />}
 							right={
 								<TextInput.Icon
 									disabled={isLoading}
 									icon={secureTextEntry ? "eye-off" : "eye"}
 									onPress={() => setSecureTextEntry(!secureTextEntry)}
+									color={colors.secondary}
 								/>
 							}
 							style={[
 								{ backgroundColor: "#FFF", color: "#000" },
 								isLoading && { opacity: 1 },
 							]}
+							contentStyle={{ color: colors.secondary }}
+							outlineStyle={{borderColor: colors.secondary}}
+							theme={{
+								colors: {
+									primary: colors.secondary,
+									onSurfaceVariant: colors.secondary,
+								},
+							}}
 							editable={!isLoading}
 						/>
 						<Button

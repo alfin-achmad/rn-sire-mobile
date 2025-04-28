@@ -1,9 +1,7 @@
-import {Text} from "react-native-paper";
 import CTopHeader from "@/components/CTopHeader";
-import {TouchableOpacity} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const AccountScreen = () => {
+const InboxScreen = () => {
 	const handleAction = {
 		onPress: async () => {
 			try {
@@ -22,4 +20,4 @@ const AccountScreen = () => {
 	)
 }
 
-export default AccountScreen
+export default InboxScreen

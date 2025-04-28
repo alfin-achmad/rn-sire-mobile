@@ -6,7 +6,7 @@ import CTopHeader from "@/components/CTopHeader";
 import CScrollView from "@/components/CScrollView";
 import colors from "@/constants/colors";
 import {formatNumber, generateAvatarUrl} from "@/helpers/general";
-import {Ionicons} from "@expo/vector-icons";
+import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import {APP_ROUTES} from "@/constants/urls";
 import useDashboardStats from "@/queries/useDashboardStats";
 import {useEffect, useState} from "react";
@@ -36,9 +36,64 @@ const DashboardScreen = () => {
 		{ name: "Electors", icon: "account-group", screen: APP_ROUTES.DASHBOARD.ELECTOR },
 		{ name: "Verify Elector", icon: "account-check", screen: APP_ROUTES.DASHBOARD.VERIFY_ELECTOR },
 		{ name: "Double Elector", icon: "account-switch", screen: APP_ROUTES.DASHBOARD.DOUBLE_ELECTOR },
+		{ name: "Inactive Elector", icon: "account-cancel", screen: APP_ROUTES.DASHBOARD.INACTIVE_ELECTOR },
 		{ name: "Users", icon: "account", screen: APP_ROUTES.DASHBOARD.USERS },
 		{ name: "Regions", icon: "city-variant", screen: APP_ROUTES.DASHBOARD.REGIONS },
-		{ name: "Reports", icon: "newspaper-variant-multiple", screen: APP_ROUTES.DASHBOARD.REPORTS },
+		{ name: "Countries", icon: "earth", screen: APP_ROUTES.DASHBOARD.COUNTRIES },
+		{ name: "Digital Card", icon: "card-account-details", screen: APP_ROUTES.DASHBOARD.CARD },
+	];
+
+	const districts = [
+		{
+			name: "District A",
+			updatedElectors: 450,
+			totalElectors: 5000,
+		},
+		{
+			name: "District B",
+			updatedElectors: 380,
+			totalElectors: 4000,
+		},
+		{
+			name: "District C",
+			updatedElectors: 420,
+			totalElectors: 4600,
+		},
+		{
+			name: "District D",
+			updatedElectors: 300,
+			totalElectors: 3500,
+		},
+		{
+			name: "District E",
+			updatedElectors: 500,
+			totalElectors: 5300,
+		},
+		{
+			name: "District F",
+			updatedElectors: 210,
+			totalElectors: 3000,
+		},
+		{
+			name: "District G",
+			updatedElectors: 150,
+			totalElectors: 2700,
+		},
+		{
+			name: "District H",
+			updatedElectors: 380,
+			totalElectors: 4500,
+		},
+		{
+			name: "District I",
+			updatedElectors: 220,
+			totalElectors: 3200,
+		},
+		{
+			name: "District J",
+			updatedElectors: 490,
+			totalElectors: 5200,
+		},
 	];
 
 	const handleAction = {
@@ -116,20 +171,44 @@ const DashboardScreen = () => {
 					</View>
 				</ScrollView>
 
-				<View className="px-4 mt-2 mb-5">
-					<View className="bg-white border border-gray-300 rounded-md">
+				<View className="px-4 mt-2">
+					<View className="bg-white border border-gray-300 rounded-md pb-2">
 						<View className="px-2 py-1">
 							<Text style={{fontSize: 16, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Main Features</Text>
 						</View>
-						<View className="flex flex-row flex-wrap justify-start px-2 py-1">
+						<View className="flex flex-row flex-wrap justify-between gap-1 px-2 py-1">
 							{features.map((item, index) => (
-								<View key={index} className="w-1/4 items-center py-1">
-									<TouchableOpacity className="flex items-center" onPress={() => router.replace(item.screen)}>
-										<Avatar.Icon size={50} icon={item.icon}  color="white" className="border border-blue-950" />
-										<Text className="text-center">{item.name}</Text>
-									</TouchableOpacity>
-								</View>
+								<TouchableOpacity activeOpacity={1} key={item.name} className="flex items-center border-blue-950" onPress={() => router.push(item.screen)}>
+									<View
+										style={{
+											width: 75,
+											height: 75,
+											backgroundColor: colors.secondary,
+											borderRadius: 8,
+											justifyContent: "center",
+											alignItems: "center",
+											shadowColor: "#000",
+											shadowOpacity: 0.2,
+											shadowRadius: 5,
+											elevation: 5,
+										}}
+									>
+										<MaterialCommunityIcons name={item.icon} size={36} color="#fff" />
+										<Text style={{fontSize: 9, fontFamily: "IBMPlexSans_Bold", textAlign: "center", color: "#FFF"}}>{item.name}</Text>
+									</View>
+								</TouchableOpacity>
 							))}
+						</View>
+					</View>
+				</View>
+
+				<View className="px-4 mt-2">
+					<View className="bg-white border border-gray-300 rounded-md">
+						<View className="px-2 py-1">
+							<Text style={{fontSize: 16, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Top 5 Districts</Text>
+						</View>
+						<View className="flex flex-row flex-wrap justify-start px-2 py-1">
+
 						</View>
 					</View>
 				</View>
