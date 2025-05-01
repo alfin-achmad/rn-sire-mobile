@@ -5,7 +5,7 @@ import {Image, Text, View} from "react-native";
 import CText from "@/components/CText";
 import {router} from "expo-router";
 
-const CTopHeader = () => {
+const CTopHeader = ({useBorderBottom=true}) => {
 	const { signOut } = useAuth()
 
 	const handleAction = {
@@ -17,7 +17,7 @@ const CTopHeader = () => {
 	}
 
 	return (
-		<Appbar.Header style={{borderBottomWidth: 2, borderColor: "#E5E7EB", backgroundColor: "#FFF"}}>
+		<Appbar.Header style={{borderBottomWidth: useBorderBottom ? 2 : 1, borderColor: "#E5E7EB", backgroundColor: "#FFF"}}>
 			<View className="pl-4 flex-row flex-1 items-center">
 				<Image
 					source={require("@/assets/image/stae-logo.png")}
