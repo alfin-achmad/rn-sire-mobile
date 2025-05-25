@@ -104,7 +104,7 @@ const ReportRegionDistrictScreen = () => {
 							</Menu>
 						</View>
 
-						
+
 
 						{/*<View className="py-1">*/}
 						{/*	<Text style={{fontSize: 15, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Unprocessed Electors</Text>*/}
