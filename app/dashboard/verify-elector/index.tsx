@@ -32,7 +32,6 @@ const VerifyElectorScreen = () => {
     const {params, updateParam, updateParams, fetchElectorVerifyList, isLoading, data, resetParams} = useElector();
     const {selectedRegions, resetRegions} = useRegion(storeName);
     const router = useRouter();
-    const {historySearchText, historyFromDetail} = useLocalSearchParams();
     const [isSearch, setIsSearch] = useState(false);
     const [searchText, setSearchText] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("ALL");
@@ -42,7 +41,7 @@ const VerifyElectorScreen = () => {
         onBack: () => {
             resetRegions(storeName);
             resetParams();
-            router.replace(APP_ROUTES.DASHBOARD);
+            router.back();
         },
         onFilterVerificationType: (value) => {
             setSelectedFilter(value);
@@ -105,8 +104,9 @@ const VerifyElectorScreen = () => {
             Keyboard.dismiss();
         },
         onLoadMore: () => {
-            updateParam("findElectorRegister", "p_page_number", params.findElectorRegister.p_page_number + 1);
-            fetchElectorVerifyList(false);
+            console.log(params.findElectorRegister);
+            // updateParam("findElectorRegister", "p_page_number", params.findElectorRegister.p_page_number + 1);
+            // fetchElectorVerifyList(false);
         },
         onChangeDate: (value, isEndDate=true) => {
             let paramName = "prtg01"
@@ -137,20 +137,31 @@ const VerifyElectorScreen = () => {
                             value={searchText}
                             onChangeText={setSearchText}
                             placeholder="Enter name or elector number"
-                            style={{ height: 40, fontSize: 14, backgroundColor: "#FFF" }}
-                            outlineStyle={{ borderRadius: 5, borderColor: "#D1D5DB" }}
+                            style={[{ height: 40, fontSize: 14, backgroundColor: "#FFF" }, isLoading && { opacity: 1 },]}
+                            outlineStyle={{ borderRadius: 5, borderWidth: 1, borderColor: colors.secondary }}
+                            contentStyle={{ color: colors.secondary }}
                             left={<TextInput.Icon icon={() => <Ionicons name="search" size={20} color="gray" />} />}
                             returnKeyType="search"
                             onSubmitEditing={() => handleAction.onSearch()}
                             className="uppercase"
+                            editable={!isLoading}
+                            theme={{
+                                colors: {
+                                    primary: colors.secondary,
+                                    onSurfaceVariant: colors.secondary,
+                                },
+                            }}
                         />
                     </View>
                     <TouchableOpacity
                         onPress={() => handleAction.onShowModalFilter()}
                         className="border bg-white border-gray-300 rounded-md justify-center items-center"
                         style={{
+                            borderColor: colors.secondary,
                             width: 40,
                             height: 40,
+                            opacity: isLoading ? 0.5 : 1,
+                            pointerEvents: isLoading ? "none" : "auto",
                         }}
                     >
                         <Ionicons disabled={isLoading} name="options" size={24} color={colors.secondary} />

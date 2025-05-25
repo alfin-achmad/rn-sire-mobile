@@ -64,10 +64,17 @@ const CElectorDetail = ({dataElectorDetail}) => {
 
                     <View className="border border-gray-300 rounded-md px-1 py-2 w-[57%]">
                         <Text className="text-sm text-gray-500 absolute -top-3 left-2 bg-white px-1">
-                            Place, and Date of Birth
+                            Date of Birth
                         </Text>
-                        <Text className="text-sm text-gray-500 ml-2">{electorByID?.TEMPAT_LAHIR || "Unknown"} - {electorByID?.TANGGAL_LAHIR}</Text>
+                        <Text className="text-sm text-gray-500 ml-2">{electorByID?.TANGGAL_LAHIR}</Text>
                     </View>
+                </View>
+
+                <View className="border border-gray-300 rounded-md mb-3 px-1 py-2 w-full">
+                    <Text className="text-sm text-gray-500 absolute -top-3 left-2 bg-white px-1">
+                        Place of Birth
+                    </Text>
+                    <Text className="text-sm text-gray-500 ml-2">-</Text>
                 </View>
 
                 <View className="border border-gray-300 rounded-md mb-3 px-1 py-2 w-full">

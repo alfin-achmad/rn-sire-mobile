@@ -17,7 +17,7 @@ const CTopHeaderSubMenu = ({ title, handlePress }: { title: string; handlePress?
 					fontFamily: "IBMPlexSans_Bold",
 				}}
 			/>
-			<Appbar.BackAction color="#FFF" />
+			<Appbar.Action icon="home" color="#FFF" />
 		</Appbar.Header>
 	);
 };

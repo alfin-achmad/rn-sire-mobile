@@ -130,4 +130,44 @@ export const dataAPI = {
 			throw error;
 		}
 	},
+	reportChartByDistrict: async (data) => {
+		try {
+			const response = await api.post("/package-info/hasil-input", data);
+
+			return response.data;
+		} catch (error) {
+			console.log("Error fetching:", error);
+			throw error;
+		}
+	},
+	reportChartByDate: async (data) => {
+		try {
+			const response = await api.post("/package-info/proses-bulanini", data);
+
+			return response.data;
+		} catch (error) {
+			console.log("Error fetching:", error);
+			throw error;
+		}
+	},
+	reportChartByMonth: async (data) => {
+		try {
+			const response = await api.post("/package-info/proses-tahunini", data);
+
+			return response.data;
+		} catch (error) {
+			console.log("Error fetching:", error);
+			throw error;
+		}
+	},
+	reportRegionRecap: async (data) => {
+		try {
+			const response = await api.post("/package-laporan/elektor-wilayah-rekap", data);
+
+			return response.data;
+		} catch (error) {
+			console.log("Error fetching:", error);
+			throw error;
+		}
+	},
 }

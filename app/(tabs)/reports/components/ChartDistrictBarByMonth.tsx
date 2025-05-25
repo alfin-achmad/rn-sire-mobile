@@ -1,0 +1,139 @@
+import React, { useState } from 'react';
+import {View, Text, ScrollView, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { Menu, IconButton } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
+import colors from '@/constants/colors';
+import {BarChart} from "react-native-gifted-charts";
+import CIconFilter from "@/components/CIconFilter";
+
+export default function ChartDistrictBarByMonth({ handleAction, barData, period, isLoading=false }) {
+	const [menuVisible, setMenuVisible] = useState(false);
+
+	return (
+		<View className="bg-white border border-gray-300 rounded-md pb-2 mt-2">
+			<View className="px-2 py-1">
+
+				<View className="flex-row justify-between items-center">
+					<Text
+						className="text-[15px]"
+						style={{ fontFamily: 'IBMPlexSans_Bold', color: colors.secondary }}
+					>
+						Elector Totals by Month
+					</Text>
+					<Menu
+						visible={menuVisible}
+						onDismiss={() => setMenuVisible(false)}
+						anchor={
+							<CIconFilter onPress={() => setMenuVisible(true)} backgroundColor="#FFF" iconColor={colors.secondary} borderColor="transparent" size={16} />
+						}
+						contentStyle={{
+							backgroundColor: 'white',
+							borderRadius: 8,
+							borderColor: colors.secondary,
+							borderWidth: 1,
+							paddingVertical: 0,
+							paddingHorizontal: 0,
+						}}
+						style={{
+							marginTop: 20,
+							marginLeft: -15,
+						}}
+					>
+						<Menu.Item
+							onPress={() => {
+								setMenuVisible(false);
+								handleAction.onClickOptionChart('byMonth');
+							}}
+							title="Filter Period"
+							titleStyle={{
+								color: colors.secondary,
+								fontSize: 12,
+								fontFamily: 'IBMPlexSans',
+								lineHeight: 16,
+							}}
+							style={{
+								height: 32,
+								justifyContent: 'center',
+								paddingHorizontal: 4,
+							}}
+						/>
+						<Menu.Item
+							onPress={() => {
+								setMenuVisible(false);
+								handleAction.onClickFullscreenChart?.('byDistrict');
+							}}
+							title="View Fullscreen"
+							titleStyle={{
+								color: colors.secondary,
+								fontSize: 12,
+								fontFamily: 'IBMPlexSans',
+								lineHeight: 16,
+							}}
+							style={{
+								height: 32,
+								justifyContent: 'center',
+								paddingHorizontal: 4,
+							}}
+						/>
+						<Menu.Item
+							onPress={() => {
+								setMenuVisible(false);
+								handleAction.onClickExportDataChart?.('byDistrict');
+							}}
+							title="Export Chart"
+							titleStyle={{
+								color: colors.secondary,
+								fontSize: 12,
+								fontFamily: 'IBMPlexSans',
+								lineHeight: 16,
+							}}
+							style={{
+								height: 28,
+								justifyContent: 'center',
+								paddingHorizontal: 4,
+							}}
+						/>
+					</Menu>
+				</View>
+
+				<Text
+					className="text-[12px] mt-0 mb-4"
+					style={{ fontFamily: 'IBMPlexSans', color: colors.secondary }}
+				>
+					Monthly elector actualization and registration totals across all districts for the year
+				</Text>
+
+				{isLoading ? (
+					<ActivityIndicator color={colors.secondary} />
+				):(
+					<>
+						<View className="flex justify-between items-center">
+							{period && (
+								<Text
+									className="text-[10px] mt-0 mb-2"
+									style={{ fontFamily: 'IBMPlexSans', color: colors.secondary }}
+								>
+									Period: {period}
+								</Text>
+							)}
+							<ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 5 }}>
+								<BarChart
+									barWidth={35}
+									noOfSections={5}
+									barBorderRadius={4}
+									data={barData}
+									yAxisThickness={0}
+									xAxisThickness={0}
+									height={200}
+									spacing={5}
+									endSpacing={20}
+								/>
+							</ScrollView>
+						</View>
+					</>
+				)}
+
+			</View>
+		</View>
+	);
+}

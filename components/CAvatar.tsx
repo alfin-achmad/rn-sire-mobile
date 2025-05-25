@@ -6,7 +6,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import colors from "@/constants/colors";
 import {CACHE_EXPIRY_TIME} from "@/constants/general";
 
-const CAvatar = ({ no, name, urlBy, width = 56, height = 80 }) => {
+const CAvatar = ({
+	                 no,
+	                 name,
+	                 urlBy,
+	                 width = 56,
+	                 height = 80,
+	                 borderClass = "border-blue-950" // default
+                 }) => {
 	const [avatarUri, setAvatarUri] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const { fetchPhotoBase64 } = dataAPI;
@@ -43,7 +50,7 @@ const CAvatar = ({ no, name, urlBy, width = 56, height = 80 }) => {
 				<Image
 					key={avatarUri}
 					source={{ uri: avatarUri }}
-					className="border border-blue-950 rounded-md"
+					className={`border rounded-md ${borderClass}`}
 					style={{ width, height }}
 				/>
 			)}

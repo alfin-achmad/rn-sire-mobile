@@ -1,5 +1,10 @@
 import {getHours, getMinutes, getSeconds, getTime, format, parse} from 'date-fns';
 
+const MONTH_ABBREVS = [
+  'Jan','Feb','Mar','Apr','May','Jun',
+  'Jul','Aug','Sep','Oct','Nov','Dec'
+];
+
 export function getCurrentHours(date = new Date()) {
   return getHours(date);
 }
@@ -36,4 +41,25 @@ export function formatDate(dateString = new Date(), dateFormat = "dd/MM/yyyy") {
 
 export function parseFormattedDate(formattedDate, dateFormat = "dd/MM/yyyy") {
   return parse(formattedDate, dateFormat, new Date());
+}
+
+export function getMonthAbbrev(monthOrDate) {
+  let idx = null;
+
+  if (monthOrDate instanceof Date) {
+    idx = monthOrDate.getMonth();           // 0-based
+  } else if (typeof monthOrDate === 'number') {
+    idx = monthOrDate - 1;                  // convert 1–12 → 0–11
+  } else if (typeof monthOrDate === 'string') {
+    const lc = monthOrDate.toLowerCase();
+    idx = MONTH_ABBREVS.findIndex(m => m.toLowerCase() === lc)
+    // if user passed full name, try matching:
+    >= 0
+      ? MONTH_ABBREVS.findIndex(m => m.toLowerCase() === lc)
+      : ['january','february','march','april','may','june',
+        'july','august','september','october','november','december']
+        .findIndex(full => full === lc);
+  }
+
+  return (idx >= 0 && idx < 12) ? MONTH_ABBREVS[idx] : null;
 }

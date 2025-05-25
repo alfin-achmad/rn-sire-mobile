@@ -5,7 +5,6 @@ import { useRouter } from "expo-router";
 import CTopHeader from "@/components/CTopHeader";
 import CScrollView from "@/components/CScrollView";
 import colors from "@/constants/colors";
-import {formatNumber, generateAvatarUrl} from "@/helpers/general";
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import {APP_ROUTES} from "@/constants/urls";
 import useDashboardStats from "@/queries/useDashboardStats";
@@ -13,23 +12,26 @@ import {useEffect, useState} from "react";
 import CAndroidDatePicker from "@/components/CAndroidDatepicker";
 import {formatDate, getFirstDateOfMonth, parseFormattedDate} from "@/helpers/formatDate";
 import CDashboardStats from "@/components/CDashboardStats";
+import CLocationAddress from "@/components/CLocationAddress";
+import CIconFilter from "@/components/CIconFilter";
 
 const DashboardScreen = () => {
 	const screenWidth = Dimensions.get("window").width;
 	const {signOut, user} = useAuth();
 	const router = useRouter();
 	const {codeDistrict, date02: paramDate02, date01: paramDate01, fetchInput, data, isLoading, setDate01, setDate02, resetDates} = useDashboardStats();
-	const avatarURL = generateAvatarUrl(user?.nama);
 
 	const [startDate, setStartDate] = useState(getFirstDateOfMonth());
 	const [endDate, setEndDate] = useState(new Date());
 	const [showModalDateFilter, setShowModalDateFilter] = useState(false);
+	const [retry, setRetry] = useState(false);
 
 	type ValidRoute = (typeof APP_ROUTES.DASHBOARD)[keyof typeof APP_ROUTES.DASHBOARD];
 	type Feature = {
 		name: string;
 		icon: string;
 		screen: ValidRoute;
+		isHide?: boolean;
 	};
 
 	const features: Feature[] = [
@@ -37,70 +39,20 @@ const DashboardScreen = () => {
 		{ name: "Verify Elector", icon: "account-check", screen: APP_ROUTES.DASHBOARD.VERIFY_ELECTOR },
 		{ name: "Double Elector", icon: "account-switch", screen: APP_ROUTES.DASHBOARD.DOUBLE_ELECTOR },
 		{ name: "Inactive Elector", icon: "account-cancel", screen: APP_ROUTES.DASHBOARD.INACTIVE_ELECTOR },
-		{ name: "Users", icon: "account", screen: APP_ROUTES.DASHBOARD.USERS },
 		{ name: "Regions", icon: "city-variant", screen: APP_ROUTES.DASHBOARD.REGIONS },
-		{ name: "Countries", icon: "earth", screen: APP_ROUTES.DASHBOARD.COUNTRIES },
 		{ name: "Digital Card", icon: "card-account-details", screen: APP_ROUTES.DASHBOARD.CARD },
+		{ name: "Digital Card1", icon: "card-account-details", screen: APP_ROUTES.DASHBOARD.CARD, isHide: true },
+		{ name: "Digital Card2", icon: "card-account-details", screen: APP_ROUTES.DASHBOARD.CARD, isHide: true },
 	];
 
-	const districts = [
-		{
-			name: "District A",
-			updatedElectors: 450,
-			totalElectors: 5000,
-		},
-		{
-			name: "District B",
-			updatedElectors: 380,
-			totalElectors: 4000,
-		},
-		{
-			name: "District C",
-			updatedElectors: 420,
-			totalElectors: 4600,
-		},
-		{
-			name: "District D",
-			updatedElectors: 300,
-			totalElectors: 3500,
-		},
-		{
-			name: "District E",
-			updatedElectors: 500,
-			totalElectors: 5300,
-		},
-		{
-			name: "District F",
-			updatedElectors: 210,
-			totalElectors: 3000,
-		},
-		{
-			name: "District G",
-			updatedElectors: 150,
-			totalElectors: 2700,
-		},
-		{
-			name: "District H",
-			updatedElectors: 380,
-			totalElectors: 4500,
-		},
-		{
-			name: "District I",
-			updatedElectors: 220,
-			totalElectors: 3200,
-		},
-		{
-			name: "District J",
-			updatedElectors: 490,
-			totalElectors: 5200,
-		},
-	];
+	const randomData = [];
 
 	const handleAction = {
 		onFirstScreenLoad: () => {
 			fetchInput({ codeDistrict: user?.kode_distrik });
 		},
 		onSwipeRefresh: () => {
+			setRetry(true);
 			handleAction.onFirstScreenLoad()
 		},
 		onDateFilterClose: () => {
@@ -129,25 +81,26 @@ const DashboardScreen = () => {
 		<>
 			<CTopHeader />
 			<CScrollView onRefresh={() => handleAction.onSwipeRefresh()}>
-				<View className="pl-4 pr-4 pb-2 pt-2">
+				<View className="px-4 pb-0 pt-2">
 					<View className="flex-row align-items-center flex-1 justify-between mb-4">
 						<View>
 							<Text className="text-lg" style={{color: colors.secondary, fontFamily: "IBMPlexSans_Bold"}}>
-								Hallo, {user?.nama}
+								Hello, {user?.nama}
 							</Text>
-							<Text className="text-sm" style={{color: colors.secondary, fontFamily: "IBMPlexSans"}}>
-								{user?.kode_user}, {(user?.role)?.toUpperCase()} - {user?.nama_distrik}
-							</Text>
+							<View className="flex flex-row">
+								<Ionicons name="location" size={15} color={colors.secondary} />
+								<CLocationAddress isRetryGetLocation={retry} onRetryComplete={() => setRetry(false)}  />
+							</View>
 						</View>
 					</View>
+				</View>
 
+				<View className="pl-4 pr-4 pb-1 pt-0">
 					<View className="flex-row items-center justify-between">
 						<Text style={{ color: colors.secondary, fontFamily: "IBMPlexSans_Bold", fontSize: 12 }}>
 							Periode : {formatDate(startDate, "dd/MM/yyyy")} - {formatDate(endDate, "dd/MM/yyyy")}
 						</Text>
-						<TouchableOpacity onPress={setShowModalDateFilter}>
-							<Ionicons name="options" size={16} color={colors.secondary} />
-						</TouchableOpacity>
+						<CIconFilter onPress={setShowModalDateFilter} />
 					</View>
 				</View>
 
@@ -172,24 +125,25 @@ const DashboardScreen = () => {
 				<View className="px-4 mt-2">
 					<View className="bg-white border border-gray-300 rounded-md pb-2">
 						<View className="px-2 py-1">
-							<Text style={{fontSize: 16, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Main Features</Text>
+							<Text style={{fontSize: 15, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Main Features</Text>
 						</View>
-						<View className="flex flex-row flex-wrap justify-between gap-1 px-2 py-1">
+						<View className="flex-row flex-wrap justify-between px-2 py-1" style={{ gap: 5 }}>
 							{features.map((item, index) => (
 								<TouchableOpacity activeOpacity={1} key={item.name} className="flex items-center border-blue-950" onPress={() => router.push(item.screen)}>
 									<View
 										style={{
 											width: 75,
 											height: 75,
-											backgroundColor: colors.secondary,
+											backgroundColor: item?.isHide ? "#FFF" : colors.secondary,
 											borderRadius: 8,
 											justifyContent: "center",
 											alignItems: "center",
-											shadowColor: "#000",
+											shadowColor: item?.isHide ? "#FFF" : "#000",
 											shadowOpacity: 0.2,
 											shadowRadius: 5,
 											elevation: 5,
 										}}
+										className={`${item?.isHide} ? '' : 'border border-blue-950'`}
 									>
 										<MaterialCommunityIcons name={item.icon} size={36} color="#fff" />
 										<Text style={{fontSize: 9, fontFamily: "IBMPlexSans_Bold", textAlign: "center", color: "#FFF"}}>{item.name}</Text>
@@ -200,13 +154,43 @@ const DashboardScreen = () => {
 					</View>
 				</View>
 
-				<View className="px-4 mt-2">
+				<View className="px-4 mt-2 mb-10">
 					<View className="bg-white border border-gray-300 rounded-md">
 						<View className="px-2 py-1">
-							<Text style={{fontSize: 16, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Top 5 Districts</Text>
+							<Text style={{fontSize: 15, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Unprocessed Electors</Text>
 						</View>
-						<View className="flex flex-row flex-wrap justify-start px-2 py-1">
 
+						<View className="px-2">
+							<View
+								className="flex-row rounded-md border border-blue-950 px-2 py-1"
+								style={{ backgroundColor: colors.secondary }}
+							>
+								<Text style={{ flex: 1, fontSize: 12, color: "#FFF", fontFamily: "IBMPlexSans_Bold" }}>NO</Text>
+								<Text style={{ flex: 4, fontSize: 12, color: "#FFF", fontFamily: "IBMPlexSans_Bold" }}>DISTRICT</Text>
+								<Text style={{ flex: 2, fontSize: 12, color: "#FFF", fontFamily: "IBMPlexSans_Bold", textAlign: "right" }}>QTY</Text>
+							</View>
+
+							{randomData.length === 0 ? (
+								<View
+									className="py-6"
+									style={{ justifyContent: "center", alignItems: "center" }}
+								>
+									<Text style={{ color: colors.secondary, fontStyle: "italic" }}>
+										No data available
+									</Text>
+								</View>
+							) : (
+								randomData.map((item, index) => (
+									<View
+										key={index}
+										className="flex-row px-3 py-2 border-b border-gray-200"
+									>
+										<Text style={{ flex: 1, fontSize: 11, color: colors.secondary }}>{index + 1}</Text>
+										<Text style={{ flex: 4, fontSize: 11, color: colors.secondary }}>{item.district}</Text>
+										<Text style={{ flex: 2, fontSize: 11, color: colors.secondary, textAlign: "right" }}>{item.qty}</Text>
+									</View>
+								))
+							)}
 						</View>
 					</View>
 				</View>

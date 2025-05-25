@@ -2,7 +2,13 @@ import {Image, Text, View} from "react-native";
 import {useEffect, useState} from "react";
 import {dataAPI} from "@/api/internal";
 
-const CFinger = ({byNo=null, isAR=false, byReg=false}) => {
+const CFinger = ({
+                     byNo = null,
+                     isAR = false,
+                     byReg = false,
+                     borderClass = "border-gray-300",
+                     labelTextClass = "text-gray-500",
+                 }) => {
     const [avatarUri1, setAvatarUri1] = useState(null);
     const [avatarUri2, setAvatarUri2] = useState(null);
     const [textAvatarUri1, setTextAvatarUri1] = useState(null);
@@ -14,24 +20,31 @@ const CFinger = ({byNo=null, isAR=false, byReg=false}) => {
         const loadAvatar = async () => {
             try {
                 const params = { kodeElektor: byNo };
-                let setURLBy = "byelector2014"
+                let setURLBy = "byelector2014";
 
-                if (isAR){
-                    setURLBy = "byelector"
+                if (isAR) {
+                    setURLBy = "byelector";
                 } else {
-                    if (byReg){
-                        setURLBy = "byreg"
+                    if (byReg) {
+                        setURLBy = "byreg";
                     }
                 }
 
                 const response = await fetchFingerBase64(params, setURLBy);
 
-                let newAvatarUri1 = "", newAvatarUri2 = "", newTextAvatarUri1 = "Finger 1", newTextAvatarUri2 = "Finger 2";
+                let newAvatarUri1 = "",
+                  newAvatarUri2 = "",
+                  newTextAvatarUri1 = "Finger 1",
+                  newTextAvatarUri2 = "Finger 2";
                 if (response?.data?.length > 0) {
                     newAvatarUri1 = `data:image/png;base64,${response.data[0]?.finger}`;
                     newAvatarUri2 = `data:image/png;base64,${response.data[1]?.finger}`;
-                    newTextAvatarUri1 = response.data[0]?.indexFinger?.trim() ? response.data[0].indexFinger : "Finger 1";
-                    newTextAvatarUri2 = response.data[1]?.indexFinger?.trim() ? response.data[1].indexFinger : "Finger 2";
+                    newTextAvatarUri1 = response.data[0]?.indexFinger?.trim()
+                      ? response.data[0].indexFinger
+                      : "Finger 1";
+                    newTextAvatarUri2 = response.data[1]?.indexFinger?.trim()
+                      ? response.data[1].indexFinger
+                      : "Finger 2";
                 }
 
                 setAvatarUri1(newAvatarUri1);
@@ -49,30 +62,41 @@ const CFinger = ({byNo=null, isAR=false, byReg=false}) => {
         loadAvatar();
     }, [byNo, isAR, byReg]);
 
-	return (
-		<>
-            <View className="border h-36 border-gray-300 rounded-md px-1 py-2 w-[28%]">
-                <Text className="text-sm text-gray-500 absolute -top-3 left-2 bg-white px-1">
-                    {textAvatarUri1}
-                </Text>
-                <Image
-                    key={avatarUri1}
-                    source={{ uri: avatarUri1 }}
-                    className="rounded-md h-full w-full"
-                />
-            </View>
-            <View className="border h-36 border-gray-300 rounded-md px-1 py-2 w-[28%]">
-                <Text className="text-sm text-gray-500 absolute -top-3 left-2 bg-white px-1">
-                    {textAvatarUri2}
-                </Text>
-                <Image
-                    key={avatarUri2}
-                    source={{ uri: avatarUri2 }}
-                    className="rounded-md h-full w-full"
-                />
-            </View>
-        </>
-	)
-}
+    return (
+      <>
+          <View
+            className={`border h-36 rounded-md px-1 py-2 w-[28%] relative ${borderClass}`}
+          >
+              <Text
+                className={`text-sm absolute -top-3 left-2 bg-white px-1 ${labelTextClass}`}
+              >
+                  {textAvatarUri1}
+              </Text>
+              <Image
+                key={avatarUri1}
+                source={{ uri: avatarUri1 }}
+                className="rounded-md h-full w-full"
+                resizeMode="contain"
+              />
+          </View>
+
+          <View
+            className={`border h-36 rounded-md px-1 py-2 w-[28%] relative ${borderClass}`}
+          >
+              <Text
+                className={`text-sm absolute -top-3 left-2 bg-white px-1 ${labelTextClass}`}
+              >
+                  {textAvatarUri2}
+              </Text>
+              <Image
+                key={avatarUri2}
+                source={{ uri: avatarUri2 }}
+                className="rounded-md h-full w-full"
+                resizeMode="contain"
+              />
+          </View>
+      </>
+    );
+};
 
 export default CFinger;

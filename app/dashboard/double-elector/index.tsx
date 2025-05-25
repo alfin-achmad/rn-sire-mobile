@@ -23,6 +23,7 @@ import CRegionPicker from "@/components/CRegionPicker";
 import useRegion from "@/queries/useRegion";
 import CAndroidDatepicker from "@/components/CAndroidDatepicker";
 import {formatDate, parseFormattedDate} from "@/helpers/formatDate";
+import CDoubleItemElector from "@/components/CDoubleItemElector";
 
 const DoubleElectorScreen = () => {
     const storeName = "electorScreen"
@@ -41,7 +42,7 @@ const DoubleElectorScreen = () => {
         onBack: () => {
             resetRegions(storeName);
             resetParams();
-            router.replace(APP_ROUTES.DASHBOARD);
+            router.replace(APP_ROUTES.MAIN.DASHBOARD);
         },
         onFilterElectorStatus: (value) => {
             updateParam("findDoubleElectorRegister", "prstatus", value === "ALL" ?"":value);
@@ -137,12 +138,20 @@ const DoubleElectorScreen = () => {
                             value={searchText}
                             onChangeText={setSearchText}
                             placeholder="Enter name or elector number"
-                            style={{ height: 40, fontSize: 14, backgroundColor: "#FFF" }}
-                            outlineStyle={{ borderRadius: 5, borderWidth: 1, borderColor: "#D1D5DB" }}
+                            style={[{ height: 40, fontSize: 14, backgroundColor: "#FFF" }, isLoading && { opacity: 1 },]}
+                            outlineStyle={{ borderRadius: 5, borderWidth: 1, borderColor: colors.secondary }}
+                            contentStyle={{ color: colors.secondary }}
                             left={<TextInput.Icon icon={() => <Ionicons name="search" size={20} color="gray" />} />}
                             returnKeyType="search"
                             onSubmitEditing={() => handleAction.onSearch()}
                             className="uppercase"
+                            editable={!isLoading}
+                            theme={{
+                                colors: {
+                                    primary: colors.secondary,
+                                    onSurfaceVariant: colors.secondary,
+                                },
+                            }}
                         />
                     </View>
                     <TouchableOpacity
@@ -150,6 +159,7 @@ const DoubleElectorScreen = () => {
                         onPress={() => handleAction.onShowModalFilter()}
                         className="border bg-white border-gray-300 rounded-md justify-center items-center"
                         style={{
+                            borderColor: colors.secondary,
                             width: 40,
                             height: 40,
                             opacity: isLoading ? 0.5 : 1,
@@ -178,7 +188,7 @@ const DoubleElectorScreen = () => {
                                 <>
                                     {data.findDoubleElectorRegister.rows.map((elector, index) => (
                                         <TouchableOpacity key={index} onPress={() => router.push({pathname: `/dashboard/double-elector/${elector?.KODE_ELEKTOR}`, params: {keyParam: "findDoubleElectorRegister", historySearchText: searchText, fromScreen: APP_ROUTES.DASHBOARD.DOUBLE_ELECTOR}})}>
-                                            <CItemsElector key={index} detailElector={elector} fromScreen={APP_ROUTES.DASHBOARD.DOUBLE_ELECTOR} />
+                                            <CDoubleItemElector key={index} detailElector={elector} fromScreen={APP_ROUTES.DASHBOARD.DOUBLE_ELECTOR} />
                                         </TouchableOpacity>
                                     ))}
 

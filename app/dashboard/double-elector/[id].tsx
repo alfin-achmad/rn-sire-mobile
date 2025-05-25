@@ -10,6 +10,7 @@ import useElector from "@/queries/useElector";
 import {Ionicons} from "@expo/vector-icons";
 import {APP_ROUTES} from "@/constants/urls";
 import CElectorDetail from "@/components/CElectorDetail";
+import CDoubleElectorDetail from "@/components/CDoubleElectorDetail";
 
 const ElectorDoubleDetail = () => {
     const {user} = useAuth();
@@ -43,18 +44,18 @@ const ElectorDoubleDetail = () => {
             setVerifyDialog(true);
         }
     }
-    console.log(data)
+
     return (
         <>
             <View className="flex-1 bg-gray-100">
-                <CTopHeaderSubMenu title={`Detail Elector #${id}`} handlePress={handleAction.onBack} />
+                <CTopHeaderSubMenu title={`Detail Double Elector`} handlePress={handleAction.onBack} />
 
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View className="px-4 py-2">
                         {isLoading ? (
                             <ActivityIndicator />
                         ):(
-                            <CElectorDetail dataElectorDetail={electorByID} />
+                            <CDoubleElectorDetail dataElectorDetail={electorByID} />
                         )}
                     </View>
                 </ScrollView>

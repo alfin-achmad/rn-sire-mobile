@@ -7,18 +7,22 @@ import React, {useCallback, useEffect, useState} from "react";
 import {TouchableOpacity, View, Animated} from "react-native";
 import {Text} from "react-native-paper";
 import colors from "@/constants/colors";
-import {useFocusEffect} from "expo-router";
+import {useFocusEffect, useLocalSearchParams, useNavigation, useRouter} from "expo-router";
+import InboxChatScreen from "@/app/(tabs)/inbox/chat";
 
 const InboxScreen = () => {
+	const router = useRouter()
 	const [indexTab, setIndexTab] = useState(0);
 	const [routesTab] = useState([
 		{ key: 'activity', title: 'Activities' },
 		{ key: 'notification', title: 'Notifications' },
+		{ key: 'chat', title: 'Live Support' },
 	]);
 
 	const renderTabScene = SceneMap({
 		activity: InboxActivityScreen,
 		notification: InboxNotificationScreen,
+		chat: InboxChatScreen,
 	});
 
 	const renderTabBar = (props) => {
@@ -33,7 +37,7 @@ const InboxScreen = () => {
 							key={i}
 							className="flex-1 justify-center items-center p-3"
 							style={[
-								i === 0 ? { borderRightWidth: 1, borderColor: "#E5E7EB" } : undefined,
+								i === 0 || i === 1 ? { borderRightWidth: 1, borderColor: "#E5E7EB" } : undefined,
 							]}
 							onPress={() => setIndexTab(i)}
 						>
@@ -52,11 +56,43 @@ const InboxScreen = () => {
 		);
 	};
 
+	useEffect(() => {
+		const loadTabState = async () => {
+			try {
+				const tab = await AsyncStorage.getItem('tabState');
+				if (tab === 'chat') {
+					setIndexTab(2);
+				} else {
+					setIndexTab(0);
+				}
+			} catch (error) {
+				console.error('Failed to load tab state:', error);
+			}
+		};
+
+		loadTabState();
+	}, []);
+
 	useFocusEffect(
 		useCallback(() => {
-			setIndexTab(0)
+			const handleTabState = async () => {
+				const storedTab = await AsyncStorage.getItem('tabState');
+				if (storedTab === 'chat') {
+					setIndexTab(2);
+				} else {
+					setIndexTab(0);
+				}
+			};
+
+			handleTabState();
+
+			return () => {
+				AsyncStorage.removeItem('tabState')
+					.then(() => console.log('tabState cleared'))
+					.catch(err => console.error('Failed to clear tabState', err));
+			};
 		}, [])
-	)
+	);
 
 	const handleAction = {
 		onPress: async () => {

@@ -2,7 +2,7 @@ import {Image, Text, View} from "react-native";
 import {useEffect, useState} from "react";
 import {dataAPI} from "@/api/internal";
 
-const CSignature = ({byNo=null, isAR=false, byReg=false}) => {
+const CSignature = ({byNo=null, isAR=false, byReg=false, borderClass = "border-gray-300", labelTextClass = "text-gray-500"}) => {
     const [avatarUri, setAvatarUri] = useState(null);
     const [loading, setLoading] = useState(true);
     const { fetchSignBase64 } = dataAPI;
@@ -42,17 +42,18 @@ const CSignature = ({byNo=null, isAR=false, byReg=false}) => {
 
 	return (
 		<>
-            <View className="border h-36 border-gray-300 rounded-md px-1 py-2 w-[40%]">
-                <Text className="text-sm text-gray-500 absolute -top-3 left-2 bg-white px-1">
-                    Signature
-                </Text>
-                <Image
-                    key={avatarUri}
-                    source={{ uri: avatarUri }}
-                    className="rounded-md h-full w-full"
-                />
-            </View>
-        </>
+        <View className={`border h-36 ${borderClass} rounded-md px-1 py-2 w-[40%] items-center justify-center relative`}>
+            <Text className={`text-sm ${labelTextClass} absolute -top-3 left-2 bg-white px-1`}>
+                Signature
+            </Text>
+            <Image
+              key={avatarUri}
+              source={{ uri: avatarUri }}
+              className="rounded-md w-full h-full"
+              resizeMode="contain"
+            />
+        </View>
+    </>
 	)
 }
 

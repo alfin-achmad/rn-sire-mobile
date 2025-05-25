@@ -49,7 +49,7 @@ const ElectorScreen = () => {
 		onBack: () => {
 			resetRegions(storeName);
 			resetParams();
-			router.replace(APP_ROUTES.DASHBOARD);
+			router.replace(APP_ROUTES.MAIN.DASHBOARD);
 		},
 		onFilterElectorStatus: (value) => {
 			updateParam("findElector", "prstatus", value === "ALL" ?"":value);
@@ -67,6 +67,7 @@ const ElectorScreen = () => {
 
 			setSearchText(formattedText);
 
+			updateParam("findElector", "p_page_number", 1);
 			updateParam("findElector", "prkdelektor", isNumeric ? formattedText : "");
 			updateParam("findElector", "prnama", isNumeric ? "" : formattedText);
 			updateParam("findElector", "prstatus", (params.findElector?.prstatus !== ""? params.findElector?.prstatus:""));
@@ -136,19 +137,28 @@ const ElectorScreen = () => {
 							value={searchText}
 							onChangeText={setSearchText}
 							placeholder="Enter name or elector number"
-							style={{ height: 40, fontSize: 14, backgroundColor: "#FFF" }}
-							outlineStyle={{ borderRadius: 5, borderWidth: 1, borderColor: "#D1D5DB" }}
+							style={[{ height: 40, fontSize: 14, backgroundColor: "#FFF" }, isLoading && { opacity: 1 },]}
+							outlineStyle={{ borderRadius: 5, borderWidth: 1, borderColor: colors.secondary }}
+							contentStyle={{ color: colors.secondary }}
 							left={<TextInput.Icon icon={() => <Ionicons name="search" size={20} color="gray" />} />}
 							returnKeyType="search"
 							onSubmitEditing={() => handleAction.onSearch()}
 							className="uppercase"
+							editable={!isLoading}
+							theme={{
+								colors: {
+									primary: colors.secondary,
+									onSurfaceVariant: colors.secondary,
+								},
+							}}
 						/>
 					</View>
 					<TouchableOpacity
 						disabled={isLoading}
 						onPress={() => handleAction.onShowModalFilter()}
-						className="border bg-white border-gray-300 rounded-md justify-center items-center"
+						className="border bg-white rounded-md justify-center items-center"
 						style={{
+							borderColor: colors.secondary,
 							width: 40,
 							height: 40,
 							opacity: isLoading ? 0.5 : 1,

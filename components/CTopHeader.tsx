@@ -1,17 +1,31 @@
 import {useAuth} from "@/queries/useAuth";
 import {Appbar} from "react-native-paper";
 import colors from "@/constants/colors";
-import {Image, Text, View} from "react-native";
-import {router} from "expo-router";
+import {Image, Text, View, Alert} from "react-native";
 
 const CTopHeader = ({useBorderBottom=true}) => {
 	const { signOut } = useAuth()
 
 	const handleAction = {
 		processSignOut: async () => {
-			await signOut()
-
-			router.replace("/")
+			Alert.alert(
+				"Sign Out",
+				"Are you sure you want to sign out?",
+				[
+					{
+						text: "Cancel",
+						style: "cancel"
+					},
+					{
+						text: "Yes",
+						style: "destructive",
+						onPress: () => {
+							signOut();
+						}
+					}
+				],
+				{ cancelable: true }
+			);
 		}
 	}
 

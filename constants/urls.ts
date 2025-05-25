@@ -12,7 +12,9 @@ export const APP_ROUTES = {
 		ACCOUNT: "/(tabs)/account",
 		ACTIVITY: "/(tabs)/activity",
 		NOTIFICATION: "/(tabs)/notification",
+		REPORTS: "/(tabs)/reports",
 		SEARCH_BY_QR: "/(modals)/qrcode-scanner",
+		FULLCHARTDISTRICT: "/(modals)/fullchart-district",
 	},
 	DASHBOARD: {
 		ELECTOR: "/dashboard/electors",
@@ -24,5 +26,11 @@ export const APP_ROUTES = {
 		REGIONS: "/dashboard/regions",
 		COUNTRIES: "/dashboard/countries",
 		CARD: "/dashboard/card",
+	},
+	REPORTS: {
+		REGION: "/reports/region",
+		AGE_GROUP: "/reports/age-group",
+		GENDER: "/reports/gender",
+		ELECTOR_TYPE: "/reports/elector-type",
 	}
 } as const;
