@@ -15,6 +15,8 @@ export const APP_ROUTES = {
 		REPORTS: "/(tabs)/reports",
 		SEARCH_BY_QR: "/(modals)/qrcode-scanner",
 		FULLCHARTDISTRICT: "/(modals)/fullchart-district",
+		FULLCHARTDISTRICTBYDATE: "/(modals)/fullchart-district-by-date",
+		FULLCHARTDISTRICTBYMONTH: "/(modals)/fullchart-district-by-month",
 	},
 	DASHBOARD: {
 		ELECTOR: "/dashboard/electors",

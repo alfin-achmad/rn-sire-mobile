@@ -2,19 +2,15 @@ import {Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import React, {useEffect, useState} from "react";
 import colors from "@/constants/colors";
 import useReport from "@/queries/useReport";
-import {formatNumber} from "@/helpers/general";
 import CIconFilter from "@/components/CIconFilter";
-import {Menu} from "react-native-paper";
+import {DataTable, Menu} from "react-native-paper";
+import {formatNumber} from "@/helpers/general";
 
 const ReportRegionDistrictScreen = () => {
 	const {setParams: setParamsReport, fetchRegionRecap, data: reportData, paramRegionRecap} = useReport();
 	const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({"1.NATIONAL": true, "2.DIASPORA": false});
 	const [menuVisible, setMenuVisible] = useState(false);
 
-	const tableData = [
-		{ id: '1', name: 'John Doe', age: 30 },
-		{ id: '2', name: 'Jane Smith', age: 25 },
-	];
 	const data = reportData?.reportRegionRecap?.data || []
 	const totalData = data?.totalRecords || 0
 	const groupedData = data.reduce((acc, item) => {
@@ -29,7 +25,6 @@ const ReportRegionDistrictScreen = () => {
 			[groupKey]: !prev[groupKey],
 		}));
 	};
-	const groupKeys = Object.keys(groupedData);
 
 	const handleAction = {
 
@@ -104,71 +99,99 @@ const ReportRegionDistrictScreen = () => {
 							</Menu>
 						</View>
 
+						<ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-2">
+							<DataTable>
+								{/* Header */}
+								<DataTable.Header
+									style={{
+										backgroundColor: colors.secondary,
+										borderTopLeftRadius: 5,
+										borderTopRightRadius: 5,
+										borderWidth: 1,
+										borderColor: "#175554",
+										height: 30,
+										paddingHorizontal: 0,
+									}}
+								>
+									{[
+										{ label: '#', width: 40 },
+										{ label: 'District Name', width: 120 },
+										{ label: 'Man', width: 70 },
+										{ label: '%', width: 70 },
+										{ label: 'Woman', width: 70 },
+										{ label: '%', width: 70 },
+										{ label: 'Total', width: 70 },
+									].map((col, idx) => (
+										<View
+											key={idx}
+											style={{
+												width: col.width,
+												justifyContent: 'center',
+												alignItems: 'center',
+												paddingHorizontal: 4,
+											}}
+										>
+											<Text
+												style={{
+													color: '#FFF',
+													fontFamily: 'IBMPlexSans_Bold',
+													fontSize: 12,
+													textAlign: 'center',
+												}}
+											>
+												{col.label}
+											</Text>
+										</View>
+									))}
+								</DataTable.Header>
 
-
-						{/*<View className="py-1">*/}
-						{/*	<Text style={{fontSize: 15, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Unprocessed Electors</Text>*/}
-						{/*</View>*/}
-						{/*<View className="border border-b-blue-950 rounded-md">*/}
-						{/*	<View className="flex-row border-b border-gray-300 px-0 py-2" style={{ backgroundColor: colors.secondary, borderTopLeftRadius: 4, borderTopRightRadius: 4 }}>*/}
-						{/*		<Text style={{ width: "8%", color: "#FFF", fontSize: 12, fontFamily: "IBMPlexSans_Bold", textAlign: "center" }}>NO</Text>*/}
-						{/*		<Text style={{ width: "22%", color: "#FFF", fontSize: 12, fontFamily: "IBMPlexSans_Bold", textAlign: "center" }}>DISTRICT</Text>*/}
-						{/*		<Text style={{ width: "16%", color: "#FFF", fontSize: 12, fontFamily: "IBMPlexSans_Bold", textAlign: "center" }}>MAN</Text>*/}
-						{/*		<Text style={{ width: "12%", color: "#FFF", fontSize: 12, fontFamily: "IBMPlexSans_Bold", textAlign: "center" }}>%</Text>*/}
-						{/*		<Text style={{ width: "16%", color: "#FFF", fontSize: 12, fontFamily: "IBMPlexSans_Bold", textAlign: "center" }}>WOMAN</Text>*/}
-						{/*		<Text style={{ width: "12%", color: "#FFF", fontSize: 12, fontFamily: "IBMPlexSans_Bold", textAlign: "center" }}>%</Text>*/}
-						{/*		<Text style={{ width: "14%", color: "#FFF", fontSize: 12, fontFamily: "IBMPlexSans_Bold", textAlign: "center" }}>ALL</Text>*/}
-						{/*	</View>*/}
-
-						{/*	/!* Table Rows *!/*/}
-						{/*	{Object.entries(groupedData).map(([groupKey, groupItems]) => {*/}
-						{/*		const isExpanded = expandedGroups[groupKey] ?? true; // default to expanded*/}
-
-						{/*		return (*/}
-						{/*			<View key={groupKey}>*/}
-						{/*				/!* Section Separator with Toggle *!/*/}
-						{/*				<TouchableOpacity onPress={() => toggleGroup(groupKey)}>*/}
-						{/*					<View className="bg-gray-200 px-2 py-1 flex-row justify-between items-center">*/}
-						{/*						<Text className="text-xs font-bold text-gray-700 uppercase">{groupKey}</Text>*/}
-						{/*						<Text className="text-xs text-gray-500">{isExpanded ? "▲" : "▼"}</Text>*/}
-						{/*					</View>*/}
-						{/*				</TouchableOpacity>*/}
-
-						{/*				/!* Table Rows (conditionally rendered) *!/*/}
-						{/*				{isExpanded &&*/}
-						{/*					groupItems.map((item, index) => (*/}
-						{/*						<View*/}
-						{/*							key={item.KODE_DISTRIK + index}*/}
-						{/*							className="flex-row px-0 py-2"*/}
-						{/*							style={{ backgroundColor: index % 2 === 0 ? "#ffffff" : "#f9fafb" }}*/}
-						{/*						>*/}
-						{/*							<Text style={{ width: "8%", fontSize: 11, textAlign: "center", fontFamily: "IBMPlexSans" }}>*/}
-						{/*								{item?.KODE_DISTRIK}*/}
-						{/*							</Text>*/}
-						{/*							<Text style={{ width: "22%", fontSize: 11, fontFamily: "IBMPlexSans" }}>*/}
-						{/*								{item?.NAMA_DISTRIK}*/}
-						{/*							</Text>*/}
-						{/*							<Text style={{ width: "16%", fontSize: 11, textAlign: "right", fontFamily: "IBMPlexSans" }}>*/}
-						{/*								{formatNumber(item?.TOTAL_PRIA)}*/}
-						{/*							</Text>*/}
-						{/*							<Text style={{ width: "12%", fontSize: 11, textAlign: "right", fontFamily: "IBMPlexSans" }}>*/}
-						{/*								{item?.PERSEN_PRIA}*/}
-						{/*							</Text>*/}
-						{/*							<Text style={{ width: "16%", fontSize: 11, textAlign: "right", fontFamily: "IBMPlexSans" }}>*/}
-						{/*								{formatNumber(item?.TOTAL_WANITA)}*/}
-						{/*							</Text>*/}
-						{/*							<Text style={{ width: "12%", fontSize: 11, textAlign: "right", fontFamily: "IBMPlexSans" }}>*/}
-						{/*								{item?.PERSEN_WANITA}*/}
-						{/*							</Text>*/}
-						{/*							<Text style={{ width: "13%", fontSize: 11, textAlign: "right", fontFamily: "IBMPlexSans" }}>*/}
-						{/*								{formatNumber(item?.TOTAL_PRIA + item?.TOTAL_WANITA)}*/}
-						{/*							</Text>*/}
-						{/*						</View>*/}
-						{/*					))}*/}
-						{/*			</View>*/}
-						{/*		);*/}
-						{/*	})}*/}
-						{/*</View>*/}
+								{/* Body (compacted rows) */}
+								{data.map((item, index) => (
+									<View
+										key={index}
+										style={{
+											flexDirection: 'row',
+											borderBottomWidth: 1,
+											borderColor: '#ddd',
+											height: 26, // Compact height
+											alignItems: 'center',
+											paddingHorizontal: 0
+										}}
+									>
+										{[
+											{ value: index + 1, width: 40, textAlign: 'center' },
+											{ value: item.NAMA_DISTRIK, width: 120, textAlign: 'left' },
+											{ value: formatNumber(item.TOTAL_PRIA), width: 70, textAlign: 'right' },
+											{ value: `${item.PERSEN_PRIA} %`, width: 70, textAlign: 'center' },
+											{ value: formatNumber(item.TOTAL_WANITA), width: 70, textAlign: 'right' },
+											{ value: `${item.PERSEN_WANITA} %`, width: 70, textAlign: 'center' },
+											{ value: formatNumber((item.TOTAL_PRIA + item.TOTAL_WANITA)), width: 70, textAlign: 'right' },
+										].map((col, idx) => (
+											<View
+												key={idx}
+												style={{
+													width: col.width,
+													justifyContent: 'center',
+													paddingHorizontal: 4,
+												}}
+											>
+												<Text
+													style={{
+														color: colors.secondary,
+														fontSize: 11,
+														fontFamily: 'IBMPlexSans',
+														textAlign: col.textAlign
+													}}
+													numberOfLines={1}
+												>
+													{col.value}
+												</Text>
+											</View>
+										))}
+									</View>
+								))}
+							</DataTable>
+						</ScrollView>
 					</View>
 				</View>
 			</ScrollView>

@@ -5,6 +5,7 @@ import colors from '@/constants/colors';
 import {BarChart} from "react-native-gifted-charts";
 import CIconFilter from "@/components/CIconFilter";
 import {Ionicons} from "@expo/vector-icons";
+import ChartActions from "@/app/(tabs)/reports/components/ChartActions";
 
 export default function ChartDistrictBar({ handleAction, barData, period, isLoading=false, isFromFullchart=false }) {
 	const [menuVisible, setMenuVisible] = useState(false);
@@ -118,24 +119,13 @@ export default function ChartDistrictBar({ handleAction, barData, period, isLoad
 								/>
 							</ScrollView>
 							{isFromFullchart && (
-								<View className="flex-row justify-between items-center gap-2 mt-4 px-4">
-									<TouchableOpacity
-										className="flex-row items-center px-4 py-2 rounded-md"
-										onPress={handleAction.onBackToOriginScreen}
-										style={{ backgroundColor: colors.secondary }}
-									>
-										<Ionicons name="arrow-back" size={16} color="#fff" />
-										<Text className="text-white font-medium ml-2">Back</Text>
-									</TouchableOpacity>
-
-									<TouchableOpacity
-										className="flex-row items-center px-4 py-2 rounded-md"
-										onPress={handleAction.onClickExportDataChart}
-										style={{backgroundColor: colors.red}}
-									>
-										<Ionicons name="download-outline" size={16} color="#fff" />
-										<Text className="text-white font-medium ml-2">Export</Text>
-									</TouchableOpacity>
+								<View className="mt-4 px-4">
+									{isFromFullchart && (
+										<ChartActions
+											onBack={handleAction.onBackToOriginScreen}
+											onExport={handleAction.onClickExportDataChart}
+										/>
+									)}
 								</View>
 							)}
 						</View>

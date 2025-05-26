@@ -1,91 +1,91 @@
 import {router, useFocusEffect, useRouter} from "expo-router";
 import {APP_ROUTES} from "@/constants/urls";
-import CTopHeader from "@/components/CTopHeader";
 import CTopHeaderSubMenu from "@/components/CTopHeaderSubMenu";
-import {Animated, BackHandler, TouchableOpacity, View} from "react-native";
+import {Animated, BackHandler, ScrollView, TouchableOpacity, View} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import {useBackRedirect} from "@/hooks/useBackRedirect";
-import {SceneMap, TabView} from "react-native-tab-view";
-import ReportRegionDistrictScreen from "@/app/reports/region/district";
-import ReportRegionSubdistrictScreen from "@/app/reports/region/subdistrict";
-import ReportRegionSuccoScreen from "@/app/reports/region/succo";
-import ReportRegionAldeiaScreen from "@/app/reports/region/aldeia";
+import CDashboardStats from "@/components/CDashboardStats";
+import useReport from "@/queries/useReport";
+import StatsRegionRecap from "@/app/reports/region/components/StatsRegionRecap";
+import {Text} from "react-native-paper";
 import colors from "@/constants/colors";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import CScrollView from "@/components/CScrollView";
 
 const ReportByRegionScreen = () => {
+	const {setParams: setParamsReport, data: reportData, isLoadingRegionRecap, } = useReport();
 	useBackRedirect(() => {
 		router.replace(APP_ROUTES.MAIN.REPORTS);
 		return true;
 	});
 
-	const router = useRouter()
-	const [indexTab, setIndexTab] = useState(0);
-	const [routesTab] = useState([
-		{ key: 'district', title: 'District' },
-		{ key: 'subdistrict', title: 'Sub District' },
-		{ key: 'aldeia', title: 'Aldeia' },
-		{ key: 'succo', title: 'Succo' },
-	]);
-
-	const renderTabScene = SceneMap({
-		district: ReportRegionDistrictScreen,
-		subdistrict: ReportRegionSubdistrictScreen,
-		succo: ReportRegionSuccoScreen,
-		aldeia: ReportRegionAldeiaScreen,
-	});
-
-	const renderTabBar = (props) => {
-		return (
-			<View className="flex-row bg-white" style={{ borderBottomWidth: 2, borderColor: "#E5E7EB" }}>
-				{props.navigationState.routes.map((route, i) => {
-					const isActive = props.navigationState.index === i;
-					const textColor = isActive ? colors.secondary : "rgba(39, 93, 173, 0.3)";
-
-					return (
-						<TouchableOpacity
-							key={i}
-							className="flex-1 justify-center items-center py-3"
-							style={[
-								i === 0 || i === 1 || i === 2 ? { borderRightWidth: 1, borderColor: "#E5E7EB" } : undefined,
-							]}
-							onPress={() => setIndexTab(i)}
-						>
-							<Animated.Text
-								style={{
-									color: textColor,
-									fontFamily: "IBMPlexSans_Bold",
-									textAlign: "center"
-								}}
-							>
-								{route.title}
-							</Animated.Text>
-						</TouchableOpacity>
-					);
-				})}
-			</View>
-		);
-	};
+	const router = useRouter();
+	const dataRecap = reportData?.reportRegionSummaryRecap;
+	const dataNational = dataRecap['NATIONAL']
+	const dataDiaspora = dataRecap['DIASPORA']
+	const dataAll = dataRecap['ALL']
 
 	const handleAction = {
 		onBack: () => {
 			router.push(APP_ROUTES.MAIN.REPORTS);
+		},
+		onClickDetail: (typeRecap) => {
+			router.replace({
+				pathname: "/reports/region/summary-electors-all",
+				params: {
+					typeRecap: typeRecap
+				}
+			})
+		},
+		onClickExport: (typeRecap) => {
+
+		},
+		onSwipeRefresh: () => {
+
 		}
 	}
 
 	return (
-		<>
+		<CScrollView onRefresh={() => handleAction.onSwipeRefresh()}>
 			<View className="flex-1 bg-gray-100">
 				<CTopHeaderSubMenu title="Report by Region" handlePress={handleAction.onBack} />
-				<TabView
-					navigationState={{ index: indexTab, routes: routesTab }}
-					renderScene={renderTabScene}
-					renderTabBar={renderTabBar}
-					onIndexChange={setIndexTab}
-					className="bg-blue-950"
-				/>
+
+				<View className="px-4 py-2">
+					<View className="bg-white border border-gray-300 rounded-md pt-2 pb-4">
+						<View className="px-2 mb-1">
+							<Text style={{fontSize: 15, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Report Electors By Region</Text>
+							<Text
+								className="text-[11px] mt-0 mb-1"
+								style={{ fontFamily: 'IBMPlexSans', color: colors.secondary }}
+							>
+								Overview of elector statistics by national, diaspora & all region.
+							</Text>
+						</View>
+						<View className="px-2 mb-1">
+							<StatsRegionRecap title="Summary Electors" data={dataAll} section="all" isLoading={isLoadingRegionRecap} handleAction={handleAction} />
+						</View>
+						<View className="px-2 mb-1">
+							<StatsRegionRecap title="Summary Electors National" data={dataNational} section="national" isLoading={isLoadingRegionRecap} handleAction={handleAction} />
+						</View>
+						<View className="px-2">
+							<StatsRegionRecap title="Summary Electors Diaspora" data={dataDiaspora} section="diaspora" isLoading={isLoadingRegionRecap} handleAction={handleAction} />
+						</View>
+
+						<View className="mt-1 px-2">
+							<Text
+								style={{
+									fontSize: 10,
+									fontFamily: "IBMPlexSans",
+									color: colors.secondary,
+									fontStyle: 'italic',
+								}}
+							>
+								Tap any title of widget above to see detailed reports.
+							</Text>
+						</View>
+					</View>
+				</View>
 			</View>
-		</>
+		</CScrollView>
 	)
 }
 

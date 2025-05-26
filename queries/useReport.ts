@@ -99,10 +99,31 @@ const useReport = () => {
 		},
 		onSuccess: async (data) => {
 			if (data) {
-				setDataByKey("reportRegionRecap", data)
+				const resultRecap = { NATIONAL: { man: 0, woman: 0, total: 0 }, DIASPORA: { man: 0, woman: 0, total: 0 }, ALL: { man: 0, woman: 0, total: 0 } };
+				const dataRecap = data?.data;
+
+				dataRecap.forEach(item => {
+					const group = item.KELOMPOK.includes("NATIONAL") ? "NATIONAL" : "DIASPORA";
+					resultRecap[group].man += item.TOTAL_PRIA;
+					resultRecap[group].woman += item.TOTAL_WANITA;
+				});
+
+				resultRecap.NATIONAL.total = resultRecap.NATIONAL.man + resultRecap.NATIONAL.woman;
+				resultRecap.DIASPORA.total = resultRecap.DIASPORA.man + resultRecap.DIASPORA.woman;
+
+				resultRecap.ALL = {
+					man: resultRecap.NATIONAL.man + resultRecap.DIASPORA.man,
+					woman: resultRecap.NATIONAL.woman + resultRecap.DIASPORA.woman,
+					total: resultRecap.NATIONAL.total + resultRecap.DIASPORA.total
+				};
+
+				setDataByKey("reportRegionRecap", dataRecap);
+				setDataByKey("reportRegionSummaryRecap", resultRecap);
 			}
+
 		},
 		onError: (error: any) => {
+			console.log(error);
 			const errorMessage =
 				error.response?.data?.message || "Fetch data failed. Please try again.";
 			showToast(errorMessage, "danger");
@@ -118,7 +139,7 @@ const useReport = () => {
 				fetchChartByMonth.mutate({ codeDistrict });
 				fetchRegionRecap.mutate();
 			}
-		}, [fetchChartByDistrict, fetchChartByDate, fetchChartByMonth, codeDistrict])
+		}, [fetchChartByDistrict, fetchChartByDate, fetchChartByMonth, fetchRegionRecap, codeDistrict])
 	);
 
 	return {
@@ -146,7 +167,7 @@ const useReport = () => {
 			});
 		},
 		fetchRegionRecap: () => fetchRegionRecap.mutate(),
-
+		isLoadingRegionRecap: fetchRegionRecap.isPending,
 		isLoadingChartByDistrict: fetchChartByDistrict.isPending,
 		isLoadingChartByDate: fetchChartByDate.isPending,
 		isLoadingChartByMonth: fetchChartByMonth.isPending,

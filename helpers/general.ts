@@ -1,6 +1,15 @@
 import { showMessage } from "react-native-flash-message";
 import colors from "@/constants/colors";
 
+export const capitalizeWords = (text: string): string => {
+	if (!text) return '';
+	return text
+		.split(' ')
+		.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.join(' ');
+};
+
+
 export function formatNumber(
 	number: number,
 	digits: number = 0,

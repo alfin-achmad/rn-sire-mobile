@@ -115,29 +115,6 @@ const ReportsScreen = () => {
 		),
 	}));
 
-	const actionOnExportChartByDistrict = async () => {
-		try {
-			const permission = await MediaLibrary.requestPermissionsAsync();
-			if (!permission.granted) {
-				Alert.alert('Permission denied', 'Cannot save image without permission');
-				return;
-			}
-
-			const uri = await viewShotRef.current.capture({
-				result: 'tmpfile',
-				format: 'png',
-				quality: 1,
-			});
-			const asset = await MediaLibrary.createAssetAsync(uri);
-			await MediaLibrary.createAlbumAsync('Charts', asset, false);
-
-			Alert.alert('Success', 'Chart saved to your Photos/Gallery');
-		} catch (err) {
-			console.error(err);
-			Alert.alert('Error', 'Failed to save chart');
-		}
-	}
-
 	const handleAction = {
 		onBack: () => {
 			router.replace(APP_ROUTES.MAIN.DASHBOARD);
@@ -159,14 +136,11 @@ const ReportsScreen = () => {
 		},
 		onClickFullscreenChart: (typeChart, paramsFromChart={}) => {
 			const listScreen = {
-				"byDistrict": APP_ROUTES.MAIN.FULLCHARTDISTRICT
+				"byDistrict": APP_ROUTES.MAIN.FULLCHARTDISTRICT,
+				"byDate": APP_ROUTES.MAIN.FULLCHARTDISTRICTBYDATE,
+				"byMonth": APP_ROUTES.MAIN.FULLCHARTDISTRICTBYMONTH
 			}
 			router.push({pathname: listScreen[typeChart], params: {screenOrigin: APP_ROUTES.MAIN.REPORTS, ...paramsFromChart}})
-		},
-		onClickExportDataChart: (typeChart) => {
-			if (typeChart === 'byDistrict'){
-				actionOnExportChartByDistrict();
-			}
 		},
 		onApplyModalDateChartByDistrict: () => {
 			fetchChartByDistrict(user?.kode_distrik || "ALL");
@@ -191,7 +165,7 @@ const ReportsScreen = () => {
 						<View className="bg-white border border-gray-300 rounded-md pb-2 pt-2">
 							<View className="flex flex-row flex-wrap justify-between gap-1.5 px-2 py-1">
 								{typeReports.map((item, index) => (
-									<TouchableOpacity activeOpacity={1} key={item.name} className="flex items-center border-blue-950" onPress={() => router.push(item.screen)}>
+									<TouchableOpacity disabled={isLoading} activeOpacity={1} key={item.name} className="flex items-center border-blue-950" onPress={() => router.push(item.screen)}>
 										<View
 											style={{
 												width: 75,

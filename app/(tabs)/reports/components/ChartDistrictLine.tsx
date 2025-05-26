@@ -6,8 +6,9 @@ import colors from '@/constants/colors';
 import {BarChart, LineChart} from "react-native-gifted-charts";
 import {getMaxField} from "@/helpers/general";
 import CIconFilter from "@/components/CIconFilter";
+import ChartActions from "@/app/(tabs)/reports/components/ChartActions";
 
-export default function ChartDistrictLine({ handleAction, lineData, period, isLoading=false }) {
+export default function ChartDistrictLine({ handleAction, lineData, period, isLoading=false, isFromFullchart=false }) {
 	const [menuVisible, setMenuVisible] = useState(false);
 
 	return (
@@ -58,42 +59,29 @@ export default function ChartDistrictLine({ handleAction, lineData, period, isLo
 								paddingHorizontal: 4,
 							}}
 						/>
-						<Menu.Item
-							onPress={() => {
-								setMenuVisible(false);
-								handleAction.onClickFullscreenChart?.('byDistrict');
-							}}
-							title="View Fullscreen"
-							titleStyle={{
-								color: colors.secondary,
-								fontSize: 12,
-								fontFamily: 'IBMPlexSans',
-								lineHeight: 16,
-							}}
-							style={{
-								height: 32,
-								justifyContent: 'center',
-								paddingHorizontal: 4,
-							}}
-						/>
-						<Menu.Item
-							onPress={() => {
-								setMenuVisible(false);
-								handleAction.onClickExportDataChart?.('byDistrict');
-							}}
-							title="Export Chart"
-							titleStyle={{
-								color: colors.secondary,
-								fontSize: 12,
-								fontFamily: 'IBMPlexSans',
-								lineHeight: 16,
-							}}
-							style={{
-								height: 28,
-								justifyContent: 'center',
-								paddingHorizontal: 4,
-							}}
-						/>
+						{!isFromFullchart && (
+							<Menu.Item
+								onPress={() => {
+									setMenuVisible(false);
+									const bindParams = {
+										chart: 'byDistrict',
+									}
+									handleAction.onClickFullscreenChart?.('byDate', bindParams);
+								}}
+								title="View Fullscreen"
+								titleStyle={{
+									color: colors.secondary,
+									fontSize: 12,
+									fontFamily: 'IBMPlexSans',
+									lineHeight: 16,
+								}}
+								style={{
+									height: 32,
+									justifyContent: 'center',
+									paddingHorizontal: 4,
+								}}
+							/>
+						)}
 					</Menu>
 				</View>
 
@@ -138,6 +126,13 @@ export default function ChartDistrictLine({ handleAction, lineData, period, isLo
 									height={200}
 								/>
 							</ScrollView>
+							{isFromFullchart && (
+								<ChartActions
+									onBack={handleAction.onBackToOriginScreen}
+									onExport={handleAction.onClickExportDataChart}
+								/>
+							)}
+
 						</View>
 					</>
 				)}
