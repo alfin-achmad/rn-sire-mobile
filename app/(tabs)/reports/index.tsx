@@ -2,7 +2,7 @@ import {router} from "expo-router";
 import {APP_ROUTES} from "@/constants/urls";
 import CTopHeader from "@/components/CTopHeader";
 import {useEffect, useRef, useState} from "react";
-import {Alert, BackHandler, ScrollView, TouchableOpacity, View, Dimensions} from "react-native";
+import {Alert, BackHandler, ScrollView, TouchableOpacity, View, Dimensions, ActivityIndicator} from "react-native";
 import {Portal, Text, Modal} from "react-native-paper";
 import colors from "@/constants/colors";
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
@@ -20,7 +20,7 @@ import ChartDistrictLine from "@/app/(tabs)/reports/components/ChartDistrictLine
 import ChartDistrictBarByMonth from "@/app/(tabs)/reports/components/ChartDistrictBarByMonth";
 
 const ReportsScreen = () => {
-	useBackRedirect();
+	useBackRedirect(false);
 
 	type ValidRoute = (typeof APP_ROUTES.REPORTS)[keyof typeof APP_ROUTES.REPORTS];
 	type DefaultItem = {
@@ -59,22 +59,22 @@ const ReportsScreen = () => {
 
 	const typeReports: DefaultItem[] = [
 		{
-			name: "Report by Region",
+			name: "Electors by Region",
 			icon: "map-marker-radius",
 			screen: APP_ROUTES.REPORTS.REGION,
 		},
 		{
-			name: "Report by Elector Type",
-			icon: "account-multiple-check",
-			screen: APP_ROUTES.REPORTS.ELECTOR_TYPE,
+			name: "Electors by Disability",
+			icon: "account-box",
+			screen: APP_ROUTES.REPORTS.ELECTOR_DISABILITY,
 		},
 		{
-			name: "Report by Gender",
+			name: "Electors by Gender",
 			icon: "gender-male-female",
 			screen: APP_ROUTES.REPORTS.GENDER,
 		},
 		{
-			name: "Report by Age Group",
+			name: "Electors by Age Group",
 			icon: "calendar-account",
 			screen: APP_ROUTES.REPORTS.AGE_GROUP,
 		},
@@ -124,6 +124,9 @@ const ReportsScreen = () => {
 		},
 		onSwipeRefresh: () => {
 			handleAction.onFirstScreenLoad()
+		},
+		onBackToOriginScreen: () => {
+			router.push(APP_ROUTES.MAIN.DASHBOARD)
 		},
 		onClickOptionChart: (typeChart: any) => {
 			if (typeChart === 'byDistrict'){
@@ -181,8 +184,14 @@ const ReportsScreen = () => {
 												padding: 10
 											}}
 										>
-											<MaterialCommunityIcons name={item.icon} size={36} color="#fff" />
-											<Text style={{fontSize: 9, fontFamily: "IBMPlexSans_Bold", textAlign: "center", color: "#FFF"}}>{item.name}</Text>
+											{isLoading ? (
+												<ActivityIndicator color="#FFF" />
+											):(
+												<>
+													<MaterialCommunityIcons name={item.icon} size={36} color="#fff" />
+													<Text style={{fontSize: 9, fontFamily: "IBMPlexSans_Bold", textAlign: "center", color: "#FFF"}}>{item.name}</Text>
+												</>
+											)}
 										</View>
 									</TouchableOpacity>
 								))}

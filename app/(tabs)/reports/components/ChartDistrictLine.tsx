@@ -7,8 +7,15 @@ import {BarChart, LineChart} from "react-native-gifted-charts";
 import {getMaxField} from "@/helpers/general";
 import CIconFilter from "@/components/CIconFilter";
 import ChartActions from "@/app/(tabs)/reports/components/ChartActions";
+import {useBackRedirect} from "@/hooks/useBackRedirect";
+import {router} from "expo-router";
 
 export default function ChartDistrictLine({ handleAction, lineData, period, isLoading=false, isFromFullchart=false }) {
+	useBackRedirect(() => {
+		handleAction.onBackToOriginScreen();
+		return true;
+	});
+
 	const [menuVisible, setMenuVisible] = useState(false);
 
 	return (
@@ -41,46 +48,105 @@ export default function ChartDistrictLine({ handleAction, lineData, period, isLo
 							marginLeft: -15,
 						}}
 					>
-						<Menu.Item
-							onPress={() => {
-								setMenuVisible(false);
-								handleAction.onClickOptionChart('byDate');
-							}}
-							title="Filter Period"
-							titleStyle={{
-								color: colors.secondary,
-								fontSize: 12,
-								fontFamily: 'IBMPlexSans',
-								lineHeight: 16,
-							}}
-							style={{
-								height: 32,
-								justifyContent: 'center',
-								paddingHorizontal: 4,
-							}}
-						/>
-						{!isFromFullchart && (
-							<Menu.Item
-								onPress={() => {
-									setMenuVisible(false);
-									const bindParams = {
-										chart: 'byDistrict',
-									}
-									handleAction.onClickFullscreenChart?.('byDate', bindParams);
-								}}
-								title="View Fullscreen"
-								titleStyle={{
-									color: colors.secondary,
-									fontSize: 12,
-									fontFamily: 'IBMPlexSans',
-									lineHeight: 16,
-								}}
-								style={{
-									height: 32,
-									justifyContent: 'center',
-									paddingHorizontal: 4,
-								}}
-							/>
+						{!isFromFullchart ? (
+							<>
+								<Menu.Item
+									onPress={() => {
+										setMenuVisible(false);
+										handleAction.onClickOptionChart('byDate');
+									}}
+									title="Filter Period"
+									titleStyle={{
+										color: colors.secondary,
+										fontSize: 12,
+										fontFamily: 'IBMPlexSans',
+										lineHeight: 16,
+									}}
+									style={{
+										height: 32,
+										justifyContent: 'center',
+										paddingHorizontal: 4,
+									}}
+								/>
+								<Menu.Item
+									onPress={() => {
+										setMenuVisible(false);
+										const bindParams = {
+											chart: 'byDistrict',
+										}
+										handleAction.onClickFullscreenChart?.('byDate', bindParams);
+									}}
+									title="View Fullscreen"
+									titleStyle={{
+										color: colors.secondary,
+										fontSize: 12,
+										fontFamily: 'IBMPlexSans',
+										lineHeight: 16,
+									}}
+									style={{
+										height: 32,
+										justifyContent: 'center',
+										paddingHorizontal: 4,
+									}}
+								/>
+							</>
+						):(
+							<>
+								<Menu.Item
+									onPress={() => {
+										setMenuVisible(false);
+										handleAction.onClickOptionChart('byDate');
+									}}
+									title="Filter Period"
+									titleStyle={{
+										color: colors.secondary,
+										fontSize: 12,
+										fontFamily: 'IBMPlexSans',
+										lineHeight: 16,
+									}}
+									style={{
+										height: 32,
+										justifyContent: 'center',
+										paddingHorizontal: 4,
+									}}
+								/>
+								<Menu.Item
+									onPress={() => {
+										setMenuVisible(false);
+										handleAction.onClickExportDataChart();
+									}}
+									title="Export"
+									titleStyle={{
+										color: colors.secondary,
+										fontSize: 12,
+										fontFamily: 'IBMPlexSans',
+										lineHeight: 16,
+									}}
+									style={{
+										height: 32,
+										justifyContent: 'center',
+										paddingHorizontal: 4,
+									}}
+								/>
+								<Menu.Item
+									onPress={() => {
+										setMenuVisible(false);
+										handleAction.onBackToOriginScreen();
+									}}
+									title="Exit Fullscreen"
+									titleStyle={{
+										color: colors.secondary,
+										fontSize: 12,
+										fontFamily: 'IBMPlexSans',
+										lineHeight: 16,
+									}}
+									style={{
+										height: 32,
+										justifyContent: 'center',
+										paddingHorizontal: 4,
+									}}
+								/>
+							</>
 						)}
 					</Menu>
 				</View>
@@ -126,13 +192,6 @@ export default function ChartDistrictLine({ handleAction, lineData, period, isLo
 									height={200}
 								/>
 							</ScrollView>
-							{isFromFullchart && (
-								<ChartActions
-									onBack={handleAction.onBackToOriginScreen}
-									onExport={handleAction.onClickExportDataChart}
-								/>
-							)}
-
 						</View>
 					</>
 				)}

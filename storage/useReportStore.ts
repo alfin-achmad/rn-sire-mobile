@@ -1,5 +1,5 @@
 import { create } from "zustand/index";
-import { formatDate, getFirstDateOfMonth } from "@/helpers/formatDate";
+import {formatDate, getFirstDateOfMonth, registrationStartDate} from "@/helpers/formatDate";
 
 type ReportStore = {
 	paramChartbyDistrict: { date01: string; date02: string };
@@ -14,12 +14,41 @@ type ReportStore = {
 		prkode_suko: string;
 		prkode_aldeia: string;
 		prtanggal1: string;
+		prtanggal2: string;
 		prparameter1: number;
 		prusia1: number;
 		praktualisasi: string;
 		p_page_number: number;
 		p_rows_per_page: number;
 	};
+	paramRegionAgeRecap: {
+		prgroup: number;
+		prindex: number;
+		prbahasa: number;
+		prkode_distrik: string;
+		prkode_subdistrik: string;
+		prkode_suko: string;
+		prkode_aldeia: string;
+		prtanggal1: string;
+		prtanggal2: string;
+		praktualisasi: string;
+		p_page_number: number;
+		p_rows_per_page: number;
+	}
+	paramRegionDisabilityRecap: {
+		prgroup: number;
+		prindex: number;
+		prbahasa: number;
+		prkode_distrik: string;
+		prkode_subdistrik: string;
+		prkode_suko: string;
+		prkode_aldeia: string;
+		prtanggal1: string;
+		prparameter1: number;
+		prusia1: number;
+		p_page_number: number;
+		p_rows_per_page: number;
+	}
 
 	setParams: <K extends keyof ReportStore>(
 		chartKey: K,
@@ -64,12 +93,41 @@ export const useReportStore = create<ReportStore>((set) => ({
 		prkode_subdistrik: "ALL",
 		prkode_suko: "ALL",
 		prkode_aldeia: "ALL",
-		prtanggal1: formatDate(),
+		prtanggal1: "ALL",
+		prtanggal2: formatDate(),
 		prparameter1: 0,
 		prusia1: 0,
 		praktualisasi: "ALL",
 		p_page_number: 1,
 		p_rows_per_page: 99999
+	},
+	paramRegionAgeRecap: {
+		prgroup: 1,
+		prindex: 0,
+		prbahasa: 1,
+		prkode_distrik: "ALL",
+		prkode_subdistrik: "ALL",
+		prkode_suko: "ALL",
+		prkode_aldeia: "ALL",
+		prtanggal1: "ALL",
+		prtanggal2: formatDate(),
+		praktualisasi: "ALL",
+		p_page_number: 1,
+		p_rows_per_page: 99999
+	},
+	paramRegionDisabilityRecap: {
+		prgroup: 1,
+		prindex: 0,
+		prbahasa: 1,
+		prkode_distrik: "ALL",
+		prkode_subdistrik: "ALL",
+		prkode_suko: "ALL",
+		prkode_aldeia: "ALL",
+		prtanggal1: formatDate(),
+		prparameter1: 0,
+		prusia1: 0,
+		p_page_number: 1,
+		p_rows_per_page: 50
 	},
 	date01: formatDate(),
 	date02: formatDate(),
@@ -127,12 +185,41 @@ export const useReportStore = create<ReportStore>((set) => ({
 				prkode_subdistrik: "ALL",
 				prkode_suko: "ALL",
 				prkode_aldeia: "ALL",
-				prtanggal1: formatDate(),
+				prtanggal1: "ALL",
+				prtanggal2: formatDate(),
 				prparameter1: 0,
 				prusia1: 0,
 				praktualisasi: "ALL",
 				p_page_number: 1,
 				p_rows_per_page: 99999
+			},
+			paramRegionAgeRecap: {
+				prgroup: 1,
+				prindex: 0,
+				prbahasa: 1,
+				prkode_distrik: "ALL",
+				prkode_subdistrik: "ALL",
+				prkode_suko: "ALL",
+				prkode_aldeia: "ALL",
+				prtanggal1: formatDate(),
+				prtanggal2: formatDate(),
+				praktualisasi: "ALL",
+				p_page_number: 1,
+				p_rows_per_page: 99999
+			},
+			paramRegionDisabilityRecap: {
+				prgroup: 1,
+				prindex: 0,
+				prbahasa: 1,
+				prkode_distrik: "ALL",
+				prkode_subdistrik: "ALL",
+				prkode_suko: "ALL",
+				prkode_aldeia: "ALL",
+				prtanggal1: formatDate(),
+				prparameter1: 0,
+				prusia1: 0,
+				p_page_number: 1,
+				p_rows_per_page: 50
 			}
 		}),
 }));

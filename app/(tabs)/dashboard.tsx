@@ -1,4 +1,4 @@
-import {Avatar, Button, Divider, Modal, Portal, Text} from "react-native-paper";
+import {Avatar, Button, Card, Divider, List, Modal, Portal, Text} from "react-native-paper";
 import {useAuth} from "@/queries/useAuth";
 import {ActivityIndicator, Dimensions, ScrollView, TouchableOpacity, View} from "react-native";
 import { useRouter } from "expo-router";
@@ -14,12 +14,13 @@ import {formatDate, getFirstDateOfMonth, parseFormattedDate} from "@/helpers/for
 import CDashboardStats from "@/components/CDashboardStats";
 import CLocationAddress from "@/components/CLocationAddress";
 import CIconFilter from "@/components/CIconFilter";
+import {formatNumber} from "@/helpers/general";
 
 const DashboardScreen = () => {
 	const screenWidth = Dimensions.get("window").width;
-	const {signOut, user} = useAuth();
+	const {user} = useAuth();
 	const router = useRouter();
-	const {codeDistrict, date02: paramDate02, date01: paramDate01, fetchInput, data, isLoading, setDate01, setDate02, resetDates} = useDashboardStats();
+	const {codeDistrict, fetchOutstandingElectors, date02: paramDate02, date01: paramDate01, fetchInput, data, isLoading, setDate01, setDate02, resetDates} = useDashboardStats();
 
 	const [startDate, setStartDate] = useState(getFirstDateOfMonth());
 	const [endDate, setEndDate] = useState(new Date());
@@ -45,11 +46,31 @@ const DashboardScreen = () => {
 		{ name: "Digital Card2", icon: "card-account-details", screen: APP_ROUTES.DASHBOARD.CARD, isHide: true },
 	];
 
-	const randomData = [];
+	const regionStats = [
+		{ name: 'Surabaya', total: 3152000 },
+		{ name: 'Jakarta Selatan', total: 2200000 },
+		{ name: 'Bandung', total: 1800000 },
+		{ name: 'Medan', total: 1450000 },
+		{ name: 'Denpasar', total: 980000 },
+		{ name: 'Bekasi', total: 2100000 },
+		{ name: 'Makassar', total: 1600000 },
+		{ name: 'Semarang', total: 1550000 },
+		{ name: 'Depok', total: 1100000 },
+		{ name: 'Tangerang', total: 1900000 },
+		{ name: 'Palembang', total: 1250000 },
+		{ name: 'Pekanbaru', total: 880000 },
+		{ name: 'Batam', total: 770000 },
+		{ name: 'Yogyakarta', total: 1050000 },
+		{ name: 'Malang', total: 890000 },
+	];
+
+	const dataOustandingElector = data?.outstandingElector || [];
+	const autheticatedCodeDistrict = user?.kode_distrik || "ALL";
 
 	const handleAction = {
 		onFirstScreenLoad: () => {
-			fetchInput({ codeDistrict: user?.kode_distrik });
+			fetchOutstandingElectors({ codeDistrict: autheticatedCodeDistrict });
+			fetchInput({ codeDistrict: autheticatedCodeDistrict });
 		},
 		onSwipeRefresh: () => {
 			setRetry(true);
@@ -158,19 +179,18 @@ const DashboardScreen = () => {
 					<View className="bg-white border border-gray-300 rounded-md">
 						<View className="px-2 py-1">
 							<Text style={{fontSize: 15, fontFamily: "IBMPlexSans_Bold", color: colors.secondary}}>Unprocessed Electors</Text>
+							<Text style={{ fontSize: 12, fontFamily: "IBMPlexSans", color: colors.secondary }}>
+								List of districts with pending elector data
+							</Text>
 						</View>
 
-						<View className="px-2">
+						<View className="px-2 mt-1 pb-3">
 							<View
-								className="flex-row rounded-md border border-blue-950 px-2 py-1"
-								style={{ backgroundColor: colors.secondary }}
+								style={{
+									maxHeight: 26 * 10,
+								}}
 							>
-								<Text style={{ flex: 1, fontSize: 12, color: "#FFF", fontFamily: "IBMPlexSans_Bold" }}>NO</Text>
-								<Text style={{ flex: 4, fontSize: 12, color: "#FFF", fontFamily: "IBMPlexSans_Bold" }}>DISTRICT</Text>
-								<Text style={{ flex: 2, fontSize: 12, color: "#FFF", fontFamily: "IBMPlexSans_Bold", textAlign: "right" }}>QTY</Text>
-							</View>
-
-							{randomData.length === 0 ? (
+							{dataOustandingElector.length === 0 ? (
 								<View
 									className="py-6"
 									style={{ justifyContent: "center", alignItems: "center" }}
@@ -180,17 +200,61 @@ const DashboardScreen = () => {
 									</Text>
 								</View>
 							) : (
-								randomData.map((item, index) => (
-									<View
-										key={index}
-										className="flex-row px-3 py-2 border-b border-gray-200"
-									>
-										<Text style={{ flex: 1, fontSize: 11, color: colors.secondary }}>{index + 1}</Text>
-										<Text style={{ flex: 4, fontSize: 11, color: colors.secondary }}>{item.district}</Text>
-										<Text style={{ flex: 2, fontSize: 11, color: colors.secondary, textAlign: "right" }}>{item.qty}</Text>
-									</View>
-								))
+								<ScrollView horizontal={false}
+								            contentContainerStyle={{
+									            flexGrow: 1,
+									            height: 230,
+								            }}
+								            nestedScrollEnabled>
+									{dataOustandingElector.map((item, index) => (
+										<TouchableOpacity
+											key={index}
+											onPress={() => console.log('unprocessed-elector')}
+											className="py-1 rounded-md px-1 flex-row justify-between items-center mb-1.5 border border-blue-950"
+											style={{
+												backgroundColor: colors.secondary,
+												elevation: 2,
+												shadowColor: '#000',
+												shadowOpacity: 0.08,
+												shadowOffset: { width: 0, height: 1 },
+												shadowRadius: 3,
+											}}
+										>
+											<Ionicons
+												name="person-add-outline"
+												size={18}
+												color="#fff"
+												style={{ marginRight: 8 }}
+											/>
+
+											<View className="flex-1">
+												<Text
+													style={{
+														fontFamily: 'IBMPlexSans_Bold',
+														color: '#FFF',
+														fontSize: 12,
+													}}
+												>
+													{item?.NAMA}
+												</Text>
+												<Text
+													style={{
+														fontFamily: 'IBMPlexSans',
+														color: '#FFF',
+														fontSize: 10,
+													}}
+												>
+													{formatNumber(item?.NSISA)}
+												</Text>
+											</View>
+											<Ionicons name="chevron-forward" size={18} color="#FFF" />
+										</TouchableOpacity>
+									))}
+								</ScrollView>
+
+
 							)}
+							</View>
 						</View>
 					</View>
 				</View>

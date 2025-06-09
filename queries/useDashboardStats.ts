@@ -2,6 +2,7 @@ import {useDashboardStore} from "@/storage/useDashboardStore";
 import {useMutation} from "@tanstack/react-query";
 import {dataAPI} from "@/api/internal";
 import {calculatePercentage, showToast} from "@/helpers/general";
+import {useAuth} from "@/queries/useAuth";
 
 interface FetchInputParams {
 	date01: string;
@@ -100,12 +101,33 @@ const useDashboardStats = () => {
 		},
 	});
 
+	const fetchOutstandingElectorsMutation = useMutation({
+		mutationFn: async ({codeDistrict}: FetchInputParams) => {
+			const params = {
+				prdistrik: codeDistrict,
+			}
+
+			return dataAPI.outstandingElector(params)
+		},
+		onSuccess: async (data) => {
+			if (data){
+				setDataByKey("outstandingElector", data)
+			}
+		},
+		onError: (error: any) => {
+			const errorMessage =
+				error.response?.data?.message || "Fetch data failed. Please try again.";
+			showToast(errorMessage, "danger");
+		},
+	});
+
 	return {
 		date01, date02, codeDistrict,
 		setDate01, setDate02, resetDates,
 		fetchInput: fetchInputMutation.mutate,
 		fetchInputThisYear: fetchInputThisYearMutation.mutate,
-		isLoading: fetchInputMutation.isPending || fetchInputThisYearMutation.isPending,
+		fetchOutstandingElectors: fetchOutstandingElectorsMutation.mutate,
+		isLoading: fetchInputMutation.isPending || fetchInputThisYearMutation.isPending || fetchOutstandingElectorsMutation.isPending,
 		data
 	}
 }

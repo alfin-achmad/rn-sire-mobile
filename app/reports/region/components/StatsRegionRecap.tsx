@@ -7,6 +7,8 @@ import ContentLoader, { Rect } from "react-content-loader/native";
 import React, {useState} from "react";
 import CIconFilter from "@/components/CIconFilter";
 import {useBackRedirect} from "@/hooks/useBackRedirect";
+import {router} from "expo-router";
+import {APP_ROUTES} from "@/constants/urls";
 
 const StatsRegionRecap = ({
 	                         data,
@@ -15,15 +17,18 @@ const StatsRegionRecap = ({
 	                         isLoading = false,
 													 handleAction = {}
                          }) => {
-	useBackRedirect(false);
-	const [menuVisible, setMenuVisible] = useState(false);
+	useBackRedirect(() => {
+		router.push(APP_ROUTES.MAIN.REPORTS)
+		return true;
+	});
+
 	const { man, woman, total } = data || {};
 
 	return (
 		<View key={section} className="border rounded-md py-1 px-2 border-blue-950" style={{ backgroundColor: "#275dad", height: 130 }}>
 			<TouchableOpacity onPress={() => handleAction.onClickDetail(section)}>
 	      <View className="flex flex-row justify-between mb-1 pb-0.5" style={{borderBottomWidth: 1, borderBottomColor: "#FFF"}}>
-					<Text style={{ color: "#FFF", fontFamily: "IBMPlexSans_Bold", fontSize: 14, lineHeight: 18 }}>
+					<Text style={{ color: "#FFF", fontFamily: "IBMPlexSans_Bold", fontSize: 13, lineHeight: 18 }}>
 						{title}
 					</Text>
 				</View>

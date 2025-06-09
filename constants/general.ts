@@ -1,3 +1,4 @@
+export const ELECTOR_REGISTRATION_START_DATE = 1718668800;
 export const API_BASE_URL = "https://www.stae-tl.com/api";
 export const AUTH_TOKEN_KEY = "authToken";
 export const REFRESH_TOKEN_KEY = "refreshToken";

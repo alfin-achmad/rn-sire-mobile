@@ -1,57 +1,55 @@
-import {ActivityIndicator, Alert, Image, Platform, ScrollView, Text, TouchableOpacity, View} from "react-native";
-import React, {useEffect, useState} from "react";
-import colors from "@/constants/colors";
-import useReport from "@/queries/useReport";
-import CIconFilter from "@/components/CIconFilter";
-import {DataTable, Menu, Modal, Portal} from "react-native-paper";
-import {capitalizeWords, formatNumber} from "@/helpers/general";
-import {router, useLocalSearchParams} from "expo-router";
-import CTopHeaderSubMenu from "@/components/CTopHeaderSubMenu";
-import CScrollView from "@/components/CScrollView";
-import {Ionicons} from "@expo/vector-icons";
 import {useBackRedirect} from "@/hooks/useBackRedirect";
-import * as Print from 'expo-print';
-import * as Sharing from 'expo-sharing';
+import {router, useLocalSearchParams} from "expo-router";
+import useReport from "@/queries/useReport";
+import React, {useState} from "react";
+import {capitalizeWords, formatNumber} from "@/helpers/general";
 import {formatDate, parseFormattedDate, registrationStartDate} from "@/helpers/formatDate";
+import * as Print from "expo-print";
+import {ActivityIndicator, Alert, Platform, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import * as Sharing from "expo-sharing";
+import CTopHeaderSubMenu from "@/components/CTopHeaderSubMenu";
+import colors from "@/constants/colors";
+import {DataTable, Menu, Modal, Portal} from "react-native-paper";
+import CIconFilter from "@/components/CIconFilter";
 import CAndroidDatePicker from "@/components/CAndroidDatepicker";
 
-const SummaryElectorsAllScreen = () => {
+const SummaryElectorsDisabilityScreen = () => {
 	useBackRedirect(() => {
-		router.push("/reports/region")
+		router.push("/reports/disability")
 		return true;
 	});
 
-	const {setParams: setParamsReport, fetchRegionRecap, data: reportData, paramRegionRecap, isLoadingRegionRecap} = useReport();
+	const {setParams: setParamsReport, fetchRegionDisabilityRecap, data: reportData, paramRegionDisabilityRecap, isLoadingRegionDisabilityRecap} = useReport();
 	const {typeRecap} = useLocalSearchParams();
 
 	const [menuVisible, setMenuVisible] = useState(false);
 	const [showModalFilterPeriod, setShowModalFilterPeriod] = useState(false);
 
-	const rawData = reportData?.reportRegionRecap || []
+	const rawData = reportData?.reportRegionDisabilityRecap || []
 	const data = rawData.filter(item => {
-		if (typeRecap === 'national') return item.KELOMPOK === '1.NATIONAL';
-		if (typeRecap === 'diaspora') return item.KELOMPOK === '2.DIASPORA';
+		if (typeRecap === 'national') return item?.KELOMPOK === 'NATIONAL';
+		if (typeRecap === 'diaspora') return item?.KELOMPOK === 'DIASPORA';
 		return true;
 	});
 
-	const totalMan = data.reduce((sum, item) => sum + item.TOTAL_PRIA, 0);
-	const totalWoman = data.reduce((sum, item) => sum + item.TOTAL_WANITA, 0);
-	const totalAll = totalMan + totalWoman;
+	const totalMatan = data.reduce((sum, item) => sum + item?.TOTAL_MATAN, 0);
+	const totalTilun = data.reduce((sum, item) => sum + item?.TOTAL_TILUN, 0);
+	const totalFisico = data.reduce((sum, item) => sum + item?.TOTAL_FISICO, 0);
+	const totalMental = data.reduce((sum, item) => sum + item?.TOTAL_MENTAL, 0);
+	const totalSeluk = data.reduce((sum, item) => sum + item?.TOTAL_SELUK, 0);
+	const totalAll = totalMatan + totalTilun + totalFisico + totalMental + totalSeluk;
 
 	const generateElectorTableHTML = (data: any[]): string => {
-		const totalPria = data.reduce((sum, item) => sum + item.TOTAL_PRIA, 0);
-		const totalWanita = data.reduce((sum, item) => sum + item.TOTAL_WANITA, 0);
-		const totalAll = totalPria + totalWanita;
-
 		const tableHeader = `
     <thead>
       <tr style="background-color: #275dad; color: white; font-weight: bold;">
         <th style="width:40px;">#</th>
         <th style="width:120px;">District Name</th>
-        <th style="width:70px;">Man</th>
-        <th style="width:70px;">%</th>
-        <th style="width:70px;">Woman</th>
-        <th style="width:70px;">%</th>
+        <th style="width:70px;">Matan</th>
+        <th style="width:70px;">Tilun</th>
+        <th style="width:70px;">Fisico</th>
+        <th style="width:70px;">Mental</th>
+        <th style="width:70px;">Seluk</th>
         <th style="width:70px;">Total</th>
       </tr>
     </thead>
@@ -61,11 +59,12 @@ const SummaryElectorsAllScreen = () => {
     <tr style="border: 1px solid ; font-size: 12px;">
       <td style="text-align:center;">${index + 1}</td>
       <td style="text-align:left;">${item.NAMA_DISTRIK}</td>
-      <td style="text-align:right;">${formatNumber(item.TOTAL_PRIA)}</td>
-      <td style="text-align:center;">${item.PERSEN_PRIA} %</td>
-      <td style="text-align:right;">${formatNumber(item.TOTAL_WANITA)}</td>
-      <td style="text-align:center;">${item.PERSEN_WANITA} %</td>
-      <td style="text-align:right;">${formatNumber(item.TOTAL_PRIA + item.TOTAL_WANITA)}</td>
+      <td style="text-align:right;">${formatNumber(item.TOTAL_MATAN)}</td>
+      <td style="text-align:right;">${formatNumber(item.TOTAL_TILUN)}</td>
+      <td style="text-align:right;">${formatNumber(item.TOTAL_FISICO)}</td>
+      <td style="text-align:right;">${formatNumber(item.TOTAL_MENTAL)}</td>
+      <td style="text-align:right;">${formatNumber(item.TOTAL_SELUK)}</td>
+      <td style="text-align:right;">${formatNumber(item.TOTAL_MATAN + item.TOTAL_TILUN + item.TOTAL_FISICO + item.TOTAL_MENTAL + item.TOTAL_SELUK)}</td>
     </tr>
   `).join("");
 
@@ -73,10 +72,11 @@ const SummaryElectorsAllScreen = () => {
     <tfoot>
       <tr style="font-weight: bold; background-color: #e6f2f0;">
         <td colspan="2" style="text-align:center;">TOTAL</td>
-        <td style="text-align:right;">${formatNumber(totalPria)}</td>
-        <td></td>
-        <td style="text-align:right;">${formatNumber(totalWanita)}</td>
-        <td></td>
+        <td style="text-align:right;">${formatNumber(totalMatan)}</td>
+        <td style="text-align:right;">${formatNumber(totalTilun)}</td>
+        <td style="text-align:right;">${formatNumber(totalFisico)}</td>
+        <td style="text-align:right;">${formatNumber(totalMental)}</td>
+        <td style="text-align:right;">${formatNumber(totalSeluk)}</td>
         <td style="text-align:right;">${formatNumber(totalAll)}</td>
       </tr>
     </tfoot>
@@ -106,7 +106,7 @@ const SummaryElectorsAllScreen = () => {
     </head>
     <body>
       <h2>Detailed Report – ${capitalizeWords(typeRecap)} Region Electors</h2>
-      <h3>Reporting Period : ${paramRegionRecap?.prtanggal1 === "ALL" ? registrationStartDate() : formatDate(paramRegionRecap?.prtanggal1)} - ${formatDate(paramRegionRecap?.prtanggal2, "dd/MM/yyyy")}</h3>
+      <h3>Reporting Period : ${paramRegionDisabilityRecap?.prtanggal1}</h3>
       ${generateElectorTableHTML(data)}
     </body>
   </html>
@@ -114,7 +114,7 @@ const SummaryElectorsAllScreen = () => {
 
 	const handleAction = {
 		onBack: () => {
-			router.push("/reports/region");
+			router.push("/reports/disability");
 		},
 		onClickFilterPeriod: () => {
 			setShowModalFilterPeriod(true);
@@ -143,7 +143,7 @@ const SummaryElectorsAllScreen = () => {
 		},
 		onApplyFilterPeriod: () => {
 			setShowModalFilterPeriod(false);
-			fetchRegionRecap()
+			fetchRegionDisabilityRecap()
 		}
 	}
 
@@ -160,13 +160,13 @@ const SummaryElectorsAllScreen = () => {
 										className="text-[14px]"
 										style={{ fontFamily: 'IBMPlexSans_Bold', color: colors.secondary }}
 									>
-										Detailed Report – {capitalizeWords(typeRecap)} Region Electors
+										Detailed Report – {capitalizeWords(typeRecap)} Disability Electors
 									</Text>
 									<Text
 										className="text-[11px] mt-0 mb-1"
 										style={{ fontFamily: 'IBMPlexSans', color: colors.secondary }}
 									>
-										Elector statistics by {typeRecap} region.
+										Elector statistics by {typeRecap} disability.
 									</Text>
 								</View>
 								<Menu
@@ -211,7 +211,7 @@ const SummaryElectorsAllScreen = () => {
 											onPress={() => {
 												setMenuVisible(false);
 
-												if (isLoadingRegionRecap){
+												if (isLoadingRegionDisabilityRecap){
 													Alert.alert(
 														"Export failed",
 														"Data is being fetched, please wait...",
@@ -223,7 +223,7 @@ const SummaryElectorsAllScreen = () => {
 											}}
 											title="Export to PDF"
 											titleStyle={{
-												color: isLoadingRegionRecap ? "#CCC" : colors.secondary,
+												color: isLoadingRegionDisabilityRecap ? "#CCC" : colors.secondary,
 												fontSize: 12,
 												fontFamily: 'IBMPlexSans',
 												lineHeight: 16,
@@ -241,13 +241,13 @@ const SummaryElectorsAllScreen = () => {
 							<View className="pb-0 mt-1">
 								<View className="flex-row items-center justify-between">
 									<Text style={{ color: colors.secondary, fontFamily: "IBMPlexSans_Bold", fontSize: 11 }}>
-										Reporting Period : {paramRegionRecap?.prtanggal1 === "ALL" ? registrationStartDate() : formatDate(paramRegionRecap?.prtanggal1)} - {formatDate(paramRegionRecap?.prtanggal2, "dd/MM/yyyy")}
+										Reporting Period : {paramRegionDisabilityRecap?.prtanggal1}
 									</Text>
 								</View>
 							</View>
 
 							{
-								isLoadingRegionRecap ? (
+								isLoadingRegionDisabilityRecap ? (
 									<ActivityIndicator color={colors.secondary} className="mt-2" />
 								):(
 									<ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-1">
@@ -266,11 +266,12 @@ const SummaryElectorsAllScreen = () => {
 												{[
 													{ label: '#', width: 40 },
 													{ label: 'District Name', width: 120 },
-													{ label: 'Man', width: 70 },
-													{ label: '%', width: 70 },
-													{ label: 'Woman', width: 70 },
-													{ label: '%', width: 70 },
-													{ label: 'Total', width: 70 },
+													{ label: 'Matan', width: 70 },
+													{ label: 'Tilun', width: 70 },
+													{ label: 'Fisico', width: 70 },
+													{ label: 'Mental', width: 70 },
+													{ label: 'Seluk', width: 70 },
+													{ label: 'All', width: 70 },
 												].map((col, idx) => (
 													<View
 														key={idx}
@@ -313,11 +314,12 @@ const SummaryElectorsAllScreen = () => {
 													{[
 														{ value: index + 1, width: 40, textAlign: 'center' },
 														{ value: item.NAMA_DISTRIK, width: 120, textAlign: 'left' },
-														{ value: formatNumber(item.TOTAL_PRIA), width: 70, textAlign: 'right' },
-														{ value: `${item.PERSEN_PRIA} %`, width: 70, textAlign: 'center' },
-														{ value: formatNumber(item.TOTAL_WANITA), width: 70, textAlign: 'right' },
-														{ value: `${item.PERSEN_WANITA} %`, width: 70, textAlign: 'center' },
-														{ value: formatNumber((item.TOTAL_PRIA + item.TOTAL_WANITA)), width: 70, textAlign: 'right' },
+														{ value: formatNumber(item?.TOTAL_MATAN), width: 70, textAlign: 'right' },
+														{ value: formatNumber(item?.TOTAL_TILUN), width: 70, textAlign: 'right' },
+														{ value: formatNumber(item?.TOTAL_FISICO), width: 70, textAlign: 'right' },
+														{ value: formatNumber(item?.TOTAL_MENTAL), width: 70, textAlign: 'right' },
+														{ value: formatNumber(item?.TOTAL_SELUK), width: 70, textAlign: 'right' },
+														{ value: formatNumber((item?.TOTAL_MATAN + item?.TOTAL_TILUN + item?.TOTAL_FISICO + item?.TOTAL_MENTAL + item?.TOTAL_SELUK)), width: 70, textAlign: 'right' },
 													].map((col, idx) => (
 														<View
 															key={idx}
@@ -376,10 +378,9 @@ const SummaryElectorsAllScreen = () => {
 															textAlign: 'right',
 														}}
 													>
-														{formatNumber(totalMan)}
+														{formatNumber(totalMatan)}
 													</Text>
 												</View>
-												<View style={{ width: 70 }} />
 												<View style={{ width: 70, paddingHorizontal: 4 }}>
 													<Text
 														style={{
@@ -389,10 +390,45 @@ const SummaryElectorsAllScreen = () => {
 															textAlign: 'right',
 														}}
 													>
-														{formatNumber(totalWoman)}
+														{formatNumber(totalTilun)}
 													</Text>
 												</View>
-												<View style={{ width: 70 }} />
+												<View style={{ width: 70, paddingHorizontal: 4 }}>
+													<Text
+														style={{
+															fontFamily: 'IBMPlexSans_Bold',
+															fontSize: 12,
+															color: colors.secondary,
+															textAlign: 'right',
+														}}
+													>
+														{formatNumber(totalFisico)}
+													</Text>
+												</View>
+												<View style={{ width: 70, paddingHorizontal: 4 }}>
+													<Text
+														style={{
+															fontFamily: 'IBMPlexSans_Bold',
+															fontSize: 12,
+															color: colors.secondary,
+															textAlign: 'right',
+														}}
+													>
+														{formatNumber(totalMental)}
+													</Text>
+												</View>
+												<View style={{ width: 70, paddingHorizontal: 4 }}>
+													<Text
+														style={{
+															fontFamily: 'IBMPlexSans_Bold',
+															fontSize: 12,
+															color: colors.secondary,
+															textAlign: 'right',
+														}}
+													>
+														{formatNumber(totalSeluk)}
+													</Text>
+												</View>
 												<View style={{ width: 70, paddingHorizontal: 4 }}>
 													<Text
 														style={{
@@ -420,10 +456,8 @@ const SummaryElectorsAllScreen = () => {
 					<Text style={{fontFamily: "IBMPlexSans_Bold", color: colors.secondary}} className="mb-4">Select Period</Text>
 
 					<CAndroidDatePicker
-						startDate={parseFormattedDate(paramRegionRecap?.prtanggal1 === "ALL" ? registrationStartDate() : paramRegionRecap?.prtanggal1)}
-						endDate={parseFormattedDate(paramRegionRecap?.prtanggal2)}
-						onChangeStart={(e) => setParamsReport('paramRegionRecap', {prtanggal1: (e === registrationStartDate() ? "ALL" : formatDate(e))})}
-						onChangeEnd={(e) => setParamsReport('paramRegionRecap', {prtanggal2: formatDate(e)})}
+						startDate={parseFormattedDate(paramRegionDisabilityRecap?.prtanggal1)}
+						onChangeStart={(e) => setParamsReport('paramRegionDisabilityRecap', {prtanggal1: formatDate(e)})}
 					/>
 
 					<TouchableOpacity
@@ -439,4 +473,4 @@ const SummaryElectorsAllScreen = () => {
 	)
 }
 
-export default SummaryElectorsAllScreen
+export default SummaryElectorsDisabilityScreen;

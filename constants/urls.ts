@@ -34,5 +34,6 @@ export const APP_ROUTES = {
 		AGE_GROUP: "/reports/age-group",
 		GENDER: "/reports/gender",
 		ELECTOR_TYPE: "/reports/elector-type",
+		ELECTOR_DISABILITY: "/reports/disability",
 	}
 } as const;

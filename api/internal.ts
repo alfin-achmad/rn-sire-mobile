@@ -130,6 +130,16 @@ export const dataAPI = {
 			throw error;
 		}
 	},
+	outstandingElector: async (data) => {
+		try {
+			const response = await api.post("/package-info/proses-sisa", data);
+
+			return response.data;
+		} catch (error) {
+			console.log("Error fetching:", error);
+			throw error;
+		}
+	},
 	reportChartByDistrict: async (data) => {
 		try {
 			const response = await api.post("/package-info/hasil-input", data);
@@ -163,6 +173,26 @@ export const dataAPI = {
 	reportRegionRecap: async (data) => {
 		try {
 			const response = await api.post("/package-laporan/elektor-wilayah-rekap", data);
+
+			return response.data;
+		} catch (error) {
+			console.log("Error fetching:", error);
+			throw error;
+		}
+	},
+	reportRegionAgeRecap: async (data) => {
+		try {
+			const response = await api.post("/package-laporan/elektor-wilayah-rekap-umur", data);
+
+			return response.data;
+		} catch (error) {
+			console.log("Error fetching:", error);
+			throw error;
+		}
+	},
+	reportRegionDisability: async (data) => {
+		try {
+			const response = await api.post("/package-laporan/elektor-cacat-rekap", data);
 
 			return response.data;
 		} catch (error) {

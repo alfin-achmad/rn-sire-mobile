@@ -1,4 +1,5 @@
 import {getHours, getMinutes, getSeconds, getTime, format, parse} from 'date-fns';
+import {ELECTOR_REGISTRATION_START_DATE} from "@/constants/general";
 
 const MONTH_ABBREVS = [
   'Jan','Feb','Mar','Apr','May','Jun',
@@ -39,6 +40,10 @@ export function formatDate(dateString = new Date(), dateFormat = "dd/MM/yyyy") {
   return format(parsedDate, dateFormat);
 }
 
+export function registrationStartDate() {
+  return formatDate(formatUnixTimestamp(ELECTOR_REGISTRATION_START_DATE));
+}
+
 export function parseFormattedDate(formattedDate, dateFormat = "dd/MM/yyyy") {
   return parse(formattedDate, dateFormat, new Date());
 }
@@ -62,4 +67,8 @@ export function getMonthAbbrev(monthOrDate) {
   }
 
   return (idx >= 0 && idx < 12) ? MONTH_ABBREVS[idx] : null;
+}
+
+export function formatUnixTimestamp(unixTimestamp) {
+  return new Date(unixTimestamp * 1000);
 }
